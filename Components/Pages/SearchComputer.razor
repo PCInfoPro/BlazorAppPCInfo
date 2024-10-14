@@ -1,0 +1,62 @@
+@page "/searchcomputers"
+
+<h3>Buscar Ordenadores</h3>
+
+<!-- Input de búsqueda -->
+<input type="text" @bind="searchTerm" placeholder="Buscar por nombre..." class="form-control" />
+
+<!-- Lista de ordenadores filtrados -->
+<div class="computer-list">
+    @if (filteredComputers.Any())
+    {
+        <div class="computers-grid">
+            @foreach (var computer in filteredComputers)
+            {
+                <a href="/computer/@computer.Id" class="computer-card">
+                    <div class="image-wrapper">
+                        <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image" />
+                    </div>
+                    <h4>@computer.Name</h4>
+                    <ul>
+                        <li><i class="bi bi-cpu"></i> Procesador: @computer.Processor</li>
+                        <li><i class="bi bi-memory"></i> Memoria RAM: @computer.RAM</li>
+                        <li><i class="bi bi-hdd"></i> Almacenamiento: @computer.Storage</li>
+                        <li><i class="bi bi-currency-dollar"></i> Precio: $@computer.Price</li>
+                    </ul>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No se encontraron ordenadores que coincidan con la búsqueda.</p>
+    }
+</div>
+
+@code {
+    // Campo para el término de búsqueda
+    private string searchTerm = string.Empty;
+
+    public class Computer
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Processor { get; set; }
+        public string RAM { get; set; }
+        public string Storage { get; set; }
+        public decimal Price { get; set; }
+        public string ImageUrl { get; set; }
+    }
+
+    private List<Computer> computers = new List<Computer>
+    {
+        new Computer { Id = 1, Name = "PC 1", Processor = "Intel i7", RAM = "16GB", Storage = "512GB SSD", Price = 1200, ImageUrl = "image1.jpg" },
+        new Computer { Id = 2, Name = "PC 2", Processor = "AMD Ryzen 5", RAM = "8GB", Storage = "256GB SSD", Price = 800, ImageUrl = "image2.jpg" },
+        new Computer { Id = 3, Name = "PC 3", Processor = "Intel i5", RAM = "8GB", Storage = "1TB HDD", Price = 600, ImageUrl = "image3.jpg" },
+        // Agrega más ordenadores...
+    };
+
+    // Lista de ordenadores filtrados según el término de búsqueda
+    private IEnumerable<Computer> filteredComputers => computers.Where(c => 
+        string.IsNullOrWhiteSpace(searchTerm) || c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+}

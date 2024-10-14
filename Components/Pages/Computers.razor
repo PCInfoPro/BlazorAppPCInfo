@@ -1,0 +1,66 @@
+@page "/computers"
+
+<h3>Listado de Ordenadores</h3>
+
+<div class="computers-container">
+    @foreach (var computer in computers)
+    {
+        <a href="/computer/@computer.Id" class="computer-card">
+            <div class="image-wrapper">
+                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image"/>
+            </div>
+            <h4>@computer.Name</h4>
+            <ul>
+                <li><i class="bi bi-cpu"></i> Procesador: @computer.Processor</li>
+                <li><i class="bi bi-memory"></i> Memoria RAM: @computer.RAM</li>
+                <li><i class="bi bi-hdd"></i> Almacenamiento: @computer.Storage</li>
+                <li><i class="bi bi-currency-dollar"></i> Precio: $@computer.Price</li>
+            </ul>
+        </a>
+    }
+</div>
+
+@code {
+    
+    public class Computer
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Processor { get; set; }
+        public string RAM { get; set; }
+        public string Storage { get; set; }
+        public decimal Price { get; set; }
+        public string ImageUrl { get; set; }
+    }
+
+    private List<Computer> computers = new List<Computer>
+    {
+        new Computer
+        {
+            Name = "Laptop Acer Aspire 5",
+            Processor = "Intel Core i5",
+            RAM = "8 GB",
+            Storage = "512 GB SSD",
+            Price = 600,
+            ImageUrl = "https://imgs.search.brave.com/OGm6SAqrFv_YJ0vXWGJdpU2fGwI2t2p_8E7gsHmEfUg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTY0/NjM3MDc5L2VzL2Zv/dG8vY29tcHV0YWRv/cmEtcG9ydCVDMyVB/MXRpbC5qcGc_cz02/MTJ4NjEyJnc9MCZr/PTIwJmM9ZXdZeHFa/M214RjZzVVVFd1RE/VlAxdHRsZWRNeFdS/QkFMZ0RXNXptSlZC/ND0"
+        },
+        new Computer
+        {
+            Name = "MacBook Pro 2021",
+            Processor = "Apple M1 Pro",
+            RAM = "16 GB",
+            Storage = "1 TB SSD",
+            Price = 2400,
+            ImageUrl = "https://imgs.search.brave.com/MuxFhfQ1eG9yTBvGgKk5LhkDt7KF4A2NH4WTDDWCE_Y/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTg1/MjIzNzEwL2VzL2Zv/dG8vcG9ydCVDMyVB/MXRpbC1mbG90YW50/ZS1hYmllcnRhLWVu/LSVDMyVBMW5ndWxv/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1kRkJ4QnRYUUVm/ck9Fd183YWo3Ujhr/TzBGSkRTUG53TUQ0/bmtYYjFLMDJVPQ"
+        },
+        new Computer
+        {
+            Name = "Dell XPS 13",
+            Processor = "Intel Core i7",
+            RAM = "16 GB",
+            Storage = "1 TB SSD",
+            Price = 1500,
+            ImageUrl = "https://imgs.search.brave.com/MuxFhfQ1eG9yTBvGgKk5LhkDt7KF4A2NH4WTDDWCE_Y/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTg1/MjIzNzEwL2VzL2Zv/dG8vcG9ydCVDMyVB/MXRpbC1mbG90YW50/ZS1hYmllcnRhLWVu/LSVDMyVBMW5ndWxv/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1kRkJ4QnRYUUVm/ck9Fd183YWo3Ujhr/TzBGSkRTUG53TUQ0/bmtYYjFLMDJVPQ"
+        }
+    };
+}
