@@ -1,0 +1,13 @@
+/* Filtros */
+.filters-container {
+    margin-bottom: 20px;
+}
+
+.filters-container input, .filters-container select {
+    font-size: 1rem;
+}
+
+/* Mejorar la visualización de los iconos */
+.bi {
+    margin-right: 8px;
+}

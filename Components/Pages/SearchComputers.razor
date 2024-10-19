@@ -3,34 +3,31 @@
 
 <h3>Buscar Ordenadores</h3>
 
-
-<!-- Cuadro de búsqueda -->
-<input type="text" @bind="searchTerm" placeholder="Buscar por nombre..." class="form-control" />
-
-<!-- Filtro por procesador -->
-<select @bind="selectedProcessor" class="form-control">
-    <option value="">Todos los procesadores</option>
-    <option value="Intel">Intel</option>
-    <option value="AMD">AMD</option>
-</select>
-
-<!-- Filtro por RAM -->
-<select @bind="selectedRAM" class="form-control">
-    <option value="">Todas las RAMs</option>
-    <option value="8GB">8GB</option>
-    <option value="16GB">16GB</option>
-    <option value="32GB">32GB</option>
-</select>
-
-<!-- Filtro por rango de precios -->
-<input type="number" @bind="minPrice" placeholder="Precio mínimo" class="form-control" />
-<input type="number" @bind="maxPrice" placeholder="Precio máximo" class="form-control" />
-
-<p>Valor de búsqueda: @searchTerm</p>
-<p>Procesador seleccionado: @selectedProcessor</p>
-<p>RAM seleccionada: @selectedRAM</p>
-<p>Precio mínimo: @minPrice</p>
-<p>Precio máximo: @maxPrice</p>
+<div class="filters-container">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Buscar por nombre..." @bind="searchTerm" />
+        </div>
+        <div class="col-md-4">
+            <select class="form-control" @bind="selectedProcessor">
+                <option value="">Todos los procesadores</option>
+                @foreach (var processor in processors)
+                {
+                    <option value="@processor">@processor</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select class="form-control" @bind="selectedRAM">
+                <option value="">Todas las RAM</option>
+                @foreach (var ram in rams)
+                {
+                    <option value="@ram">@ram</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
 
 
 <!-- Lista de ordenadores filtrados -->
@@ -79,6 +76,9 @@
     private string selectedRAM = string.Empty;
     private decimal? minPrice;
     private decimal? maxPrice;
+
+    private List<string> processors = new List<string> { "Intel", "AMD", "Apple M1", "Apple M2" };
+    private List<string> rams = new List<string> { "8GB", "16G", "32GB", "64GB" };
 
     // Lista de ordenadores originales
     private List<Computer> computers = new List<Computer>
