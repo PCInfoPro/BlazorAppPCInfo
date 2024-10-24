@@ -1,0 +1,220 @@
+@page "/add-computer"
+@using UtilInfoPC.Models;
+@using System.Text.Json
+@using Microsoft.AspNetCore.Antiforgery
+@using System.Net.Http.Headers
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h3 class="text-center mb-4">Añadir Nuevo Ordenador</h3>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <p style="color: red">@errorMessage</p>
+            }
+
+
+            <EditForm Model="@newComputer" FormName="AddForm" OnValidSubmit="HandleValidSubmit" class="p-4 shadow-sm rounded" style="background-color: #f8f9fa;">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <!-- Nombre del ordenador -->
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Modelo del ordenador</label>
+                    <InputText id="Name" class="form-control" placeholder="Nombre del ordenador" @bind-Value="newComputer.Name" />
+                </div>
+
+                <!-- Marca -->
+                <div class="mb-3">
+                    <label for="Brand" class="form-label">Marca</label>
+                    <select id="Brand" class="form-select" @bind="newComputer.Brand">
+                        <option value="">Seleccione una marca</option>
+                        @foreach (var brand in brandOptions)
+                        {
+                            <option value="@brand">@brand</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Procesador -->
+                <div class="mb-3">
+                    <label for="Processor" class="form-label">Procesador</label>
+                    <select id="Processor" class="form-select" @bind="newComputer.Processor">
+                        <option value="">Seleccione un procesador</option>
+                        @foreach (var processor in processorOptions)
+                        {
+                            <option value="@processor">@processor</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Memoria RAM -->
+                <div class="mb-3">
+                    <label for="RAM" class="form-label">Memoria RAM (GB)</label>
+                    <select id="RAM" class="form-select" @bind="newComputer.RAM">
+                        <option value="">Seleccione la memoria RAM</option>
+                        @foreach (var ram in ramOptions)
+                        {
+                            <option value="@ram">@ram GB</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Opción de almacenamiento: Ingreso manual o seleccionar disco -->
+                <div class="mb-3">
+                    <label class="form-label">Opciones de almacenamiento</label>
+                    
+                    <!-- Seleccionar si usar almacenamiento personalizado o existente -->
+                    <div class="form-check">
+                        <InputCheckbox id="UseCustomStorage" class="form-check-input" @bind-Value="newComputer.UseCustomStorage" />
+                        <label for="UseCustomStorage" class="form-check-label">Usar almacenamiento personalizado</label>
+                    </div>
+
+                    @if (newComputer.UseCustomStorage)
+                    {
+                        <!-- Almacenamiento personalizado (manual) -->
+                        <div class="mt-2">
+                            <label for="StorageGB" class="form-label">Almacenamiento (GB)</label>
+                            <select id="StorageGB" class="form-select" @bind="newComputer.CustomStorageGB">
+                                <option value="">Seleccione el almacenamiento</option>
+                                @foreach (var storage in storageOptions)
+                                {
+                                    <option value="@storage">@storage GB</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Seleccionar disco duro existente -->
+                        <div class="mt-2">
+                            <label for="SelectedStorage" class="form-label">Seleccionar almacenamiento del sistema</label>
+                            <InputSelect id="SelectedStorage" class="form-control" @bind-Value="newComputer.SelectedStorageId">
+                                <option value="">Seleccione un disco duro</option>
+                                @foreach (var drive in hardDrives)
+                                {
+                                    <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    }
+                </div>
+
+                <!-- Precio -->
+                <div class="mb-3">
+                    <label for="Price" class="form-label">Precio ($)</label>
+                    <InputNumber id="Price" class="form-control" placeholder="Ingrese el precio en USD" @bind-Value="newComputer.Price" />
+                </div>
+
+                <!-- URL de la imagen -->
+                <div class="mb-3">
+                    <label for="ImageUrl" class="form-label">URL de la imagen</label>
+                    <InputText id="ImageUrl" class="form-control" placeholder="URL de la imagen del ordenador" @bind-Value="newComputer.ImageUrl" />
+                </div>
+
+                <!-- Botón para guardar -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar Ordenador</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Computer newComputer = new Computer();
+    private List<string> processorOptions = new List<string>();
+    private List<int> ramOptions = new List<int>();
+    private List<int> storageOptions = new List<int>();
+    private List<HardDrive> hardDrives = new List<HardDrive>();
+    private List<string> brandOptions = new List<string>();
+    private AuthToken token2;
+    private string errorMessage;
+    private LoginUser user = new LoginUser 
+    {
+        Username = "admin",
+        Password = "password"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5175/api/Auth/login");
+        request.Content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
+        var response = await Http.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonString = await response.Content.ReadAsStringAsync();
+            token2 = Newtonsoft.Json.JsonConvert.DeserializeObject<AuthToken>(jsonString); // O usa System.Text.Json.JsonSerializer
+
+            Console.WriteLine($"token: {token2}");
+
+            // Agregar el token JWT al encabezado de la solicitud
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token2.Token);
+            
+            // Cargar las opciones de la API
+            processorOptions = await Http.GetFromJsonAsync<List<string>>("http://localhost:5175/api/specifications/processors");
+            ramOptions = await Http.GetFromJsonAsync<List<int>>("http://localhost:5175/api/specifications/ram");
+            storageOptions = await Http.GetFromJsonAsync<List<int>>("http://localhost:5175/api/specifications/storage");
+            brandOptions = await Http.GetFromJsonAsync<List<string>>("http://localhost:5175/api/specifications/brands");
+            hardDrives = await Http.GetFromJsonAsync<List<HardDrive>>("http://localhost:5175/api/storages");
+        }
+        else
+        {
+            Console.WriteLine($"Error: {response.StatusCode}");
+        }
+        
+    }
+
+    @* private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("http://localhost:5175/api/computers", newComputer);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/computers");
+        }
+        else
+        {
+            Console.WriteLine("Error al añadir el ordenador.");
+        }
+    } *@
+
+    private async Task HandleValidSubmit()
+    {
+        // Almacenar el valor correcto según la elección del almacenamiento
+        if (newComputer.UseCustomStorage && newComputer.CustomStorageGB.HasValue)
+        {
+            newComputer.Storage = newComputer.CustomStorageGB.Value;
+        }
+        else if (!newComputer.UseCustomStorage && newComputer.SelectedStorageId.HasValue)
+        {
+            var selectedDrive = hardDrives.FirstOrDefault(d => d.Id == newComputer.SelectedStorageId.Value);
+            if (selectedDrive != null)
+            {
+                newComputer.Storage = selectedDrive.CapacityGB;
+            }
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:5175/api/computers");   
+        request.Content = new StringContent(JsonSerializer.Serialize(newComputer), System.Text.Encoding.UTF8, "application/json");
+
+        // Agregar el token JWT al encabezado de la solicitud
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token2.Token);
+        var response = await Http.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/computers");
+        }
+        else
+        {
+            Console.WriteLine("Error al añadir el ordenador.");
+        }
+    }
+
+}

@@ -1,0 +1,36 @@
+/* Estilo para los formularios */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+form h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+form .form-label {
+    font-weight: 600;
+}
+
+form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+form .form-control {
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+form select.form-select {
+    padding: 0.75rem;
+    font-size: 1rem;
+}
