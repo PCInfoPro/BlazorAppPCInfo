@@ -1,5 +1,6 @@
 using BlazorAppPCInfo.Components;
-using INFOPC.Data;
+using Blazored.Modal;
+using INFOPC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddHttpClient<ComputerService>(client =>
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddBlazoredModal();
 
 builder.Services.AddServerSideBlazor();
 

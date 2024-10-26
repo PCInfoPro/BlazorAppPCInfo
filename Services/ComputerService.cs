@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using UtilInfoPC.Models;
 
-namespace INFOPC.Data
+namespace INFOPC.Services
 {
     public class ComputerService
     {

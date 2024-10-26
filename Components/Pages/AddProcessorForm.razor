@@ -1,0 +1,35 @@
+@using UtilInfoPC.Models;
+@inject HttpClient Http
+
+<EditForm Model="@newProcessor" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="BrandName" class="form-label">Nombre del procesador</label>
+        <InputText id="BrandName" class="form-control" @bind-Value="newProcessor.Model" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar procesador</button>
+</EditForm>
+
+@code {
+    private Processor newProcessor = new Processor();
+
+    [Parameter]
+    public EventCallback OnProcessorAdded { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:5000/api/processors", newProcessor);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await OnProcessorAdded.InvokeAsync();
+        }
+        else
+        {
+            Console.WriteLine("Error al añadir la marca.");
+        }
+    }
+}

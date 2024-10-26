@@ -1,0 +1,48 @@
+
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@using UtilInfoPC.Models;
+@inject Blazored.Modal.Services.IModalService ModalService
+@inject HttpClient Http
+
+<EditForm Model="@brandModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Nombre de la Marca:</label>
+        <InputText @bind-Value="brandModel.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Marca</button>
+</EditForm>
+
+@code {
+    [CascadingParameter] public Blazored.Modal.BlazoredModalInstance BlazoredModal { get; set; }
+    private Brand brandModel = new Brand();
+
+    [Parameter]
+    public EventCallback OnBrandAdded { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        // Aquí puedes hacer la lógica para guardar la marca (API o base de datos)
+        @* await Task.Delay(100); // Simulamos una llamada a la API o base de datos *@
+
+         var response = await Http.PostAsJsonAsync("https://localhost:5000/api/brands", brandModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await OnBrandAdded.InvokeAsync();
+        }
+        else
+        {
+            Console.WriteLine("Error al añadir la marca.");
+        }
+
+        // Cierra el modal y envía un resultado
+        await BlazoredModal.CloseAsync(ModalResult.Ok(brandModel));
+
+    }
+}
+
