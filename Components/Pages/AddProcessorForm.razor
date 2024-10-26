@@ -21,7 +21,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:5000/api/processors", newProcessor);
+        var response = await Http.PostAsJsonAsync("https://localhost:5000/api/Processors", newProcessor);
 
         if (response.IsSuccessStatusCode)
         {

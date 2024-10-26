@@ -15,7 +15,6 @@
                 <p style="color: red">@errorMessage</p>
             }
 
-
             <EditForm Model="@newComputer" FormName="AddForm" OnValidSubmit="HandleValidSubmit" class="p-4 shadow-sm rounded" style="background-color: #f8f9fa;">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -29,44 +28,50 @@
                 <!-- Marca -->
                 <div class="mb-3 d-flex align-items-center">
                     <label for="Brand" class="form-label">Marca</label>
-                    <select id="Brand" class="form-select" @bind="newComputer.Brand">
-                        <option value="">Seleccione una marca</option>
-                        @foreach (var brand in brandOptions)
-                        {
-                            <option value="@brand">@brand</option>
-                        }
-                    </select>
-                    <button type="button" class="btn btn-link" @onclick="ShowAddBrandModal"><i class="bi bi-plus"></i></button>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="Brand" class="form-select" @bind="newComputer.Brand">
+                            <option value="">Seleccione una marca</option>
+                            @foreach (var brand in brands)
+                            {
+                                <option value="@brand.Id">@brand.Name</option>
+                            }
+                        </select>
+                        <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
+                    </div>
                 </div>
 
                 <!-- Procesador -->
-                <div class="mb-3 d-flex align-items-center">
+                <div class="mb-3">
                     <label for="Processor" class="form-label">Procesador</label>
-                    <select id="Processor" class="form-select" @bind="newComputer.Processor">
-                        <option value="">Seleccione un procesador</option>
-                        @foreach (var processor in processorOptions)
-                        {
-                            <option value="@processor">@processor</option>
-                        }
-                    </select>
-                    <button type="button" class="btn btn-link" @onclick="ShowAddProcessorModal"><i class="bi bi-plus"></i></button>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="Processor" class="form-select" @bind="newComputer.Processor">
+                            <option value="">Seleccione un procesador</option>
+                            @foreach (var processor in processors)
+                            {
+                                <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
+                            }
+                        </select>
+                        <button type="button" class="btn btn-link" @onclick="OpenAddProcessorModal"><i class="bi bi-plus"></i></button>
+                    </div>
                 </div>
 
                 <!-- Memoria RAM -->
-                <div class="mb-3 d-flex align-items-center">
+                <div class="mb-3">
                     <label for="RAM" class="form-label">Memoria RAM (GB)</label>
-                    <select id="RAM" class="form-select" @bind="newComputer.RAM">
-                        <option value="">Seleccione la memoria RAM</option>
-                        @foreach (var ram in ramOptions)
-                        {
-                            <option value="@ram">@ram GB</option>
-                        }
-                    </select>
-                    <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="RAM" class="form-select" @bind="newComputer.RAM">
+                            <option value="">Seleccione la memoria RAM</option>
+                            @foreach (var ram in rams)
+                            {
+                                <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
+                            }
+                        </select>
+                        <button type="button" class="btn btn-link" @onclick="OpenAddRAMModal"><i class="bi bi-plus"></i></button>
+                    </div>
                 </div>
 
                 <!-- Opción de almacenamiento: Ingreso manual o seleccionar disco -->
-                <div class="mb-3 d-flex align-items-center">
+                <div class="mb-3">
                     <label class="form-label">Opciones de almacenamiento</label>
                     
                     <!-- Seleccionar si usar almacenamiento personalizado o existente -->
@@ -94,13 +99,16 @@
                         <!-- Seleccionar disco duro existente -->
                         <div class="mt-2">
                             <label for="SelectedStorage" class="form-label">Seleccionar almacenamiento del sistema</label>
-                            <InputSelect id="SelectedStorage" class="form-control" @bind-Value="newComputer.SelectedStorageId">
-                                <option value="">Seleccione un disco duro</option>
-                                @foreach (var drive in hardDrives)
-                                {
-                                    <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
-                                }
-                            </InputSelect>
+                            <div class="mt-2 d-flex align-items-center">
+                                <select id="SelectedStorage" class="form-select" @bind="newComputer.SelectedStorageId">
+                                    <option value="">Seleccione un disco duro</option>
+                                    @foreach (var drive in hardDrives)
+                                    {
+                                        <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
+                                    }
+                                </select>
+                                <button type="button" class="btn btn-link" @onclick="OpenAddHardDriveModal"><i class="bi bi-plus"></i></button>
+                            </div>
                         </div>
                     }
                 </div>
@@ -126,51 +134,11 @@
     </div>
 </div>
 
-
-@* <!-- Modal para agregar nueva marca -->
-@if (showAddBrandModal)
-{
-    <Modal Title="Agregar Nueva Marca" OnClose="CloseAddBrandModal">
-        <AddBrandForm OnBrandAdded="RefreshBrands" />
-    </Modal>
-}
-
-<!-- Modal para agregar nuevo procesador -->
-@if (showAddProcessorModal)
-{
-    <Modal Title="Agregar Nuevo Procesador" OnClose="CloseAddProcessorModal">
-        <AddProcessorForm OnProcessorAdded="RefreshProcessors" />
-    </Modal>
-}
-
-<!-- Modal para agregar nueva RAM -->
-@if (showAddRAMModal)
-{
-    <Modal Title="Agregar Nueva RAM" OnClose="CloseAddRAMModal">
-        <AddRAMForm OnRAMAdded="RefreshRAMs" />
-    </Modal>
-}
-
-<!-- Modal para agregar nuevo Disco Duro -->
-@if (showAddHardDriveModal)
-{
-    <Modal Title="Agregar Nuevo Disco Duro" OnClose="CloseAddHardDriveModal">
-        <AddHardDriveForm OnHardDriveAdded="RefreshHardDrives" />
-    </Modal>
-} *@
-
 @code {
     #region variables
-    private bool showAddBrandModal = false;
-    private bool showAddProcessorModal = false;
-    private bool showAddRAMModal = false;
-    private bool showAddHardDriveModal = false;
     private Computer newComputer = new Computer();
-    private List<string> processorOptions = new List<string>();
-    private List<int> ramOptions = new List<int>();
     private List<int> storageOptions = new List<int>();
     private List<HardDrive> hardDrives = new List<HardDrive>();
-    private List<string> brandOptions = new List<string>();
     private List<Brand> brands = new List<Brand>();
     private List<Processor> processors = new List<Processor>();
     private List<RAM> rams = new List<RAM>();
@@ -200,11 +168,11 @@
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token2.Token);
             
             // Cargar las opciones de la API
-            processorOptions = await Http.GetFromJsonAsync<List<string>>("http://localhost:5175/api/specifications/processors");
-            ramOptions = await Http.GetFromJsonAsync<List<int>>("http://localhost:5175/api/specifications/ram");
-            storageOptions = await Http.GetFromJsonAsync<List<int>>("http://localhost:5175/api/specifications/storage");
-            brandOptions = await Http.GetFromJsonAsync<List<string>>("http://localhost:5175/api/specifications/brands");
-            hardDrives = await Http.GetFromJsonAsync<List<HardDrive>>("http://localhost:5175/api/storages");
+            await RefreshHardDrives();
+            await RefreshRAMs();
+            await RefreshProcessors();
+            await RefreshBrands();
+            storageOptions = new List<int> { 128, 256, 512, 1024, 2048 };
         }
         else
         {
@@ -243,7 +211,7 @@
             }
         }
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:5175/api/computers");   
+        var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5175/api/Computers");   
         request.Content = new StringContent(JsonSerializer.Serialize(newComputer), System.Text.Encoding.UTF8, "application/json");
 
         // Agregar el token JWT al encabezado de la solicitud
@@ -259,33 +227,40 @@
             Console.WriteLine("Error al añadir el ordenador.");
         }
     }
-
+    
     private async Task OpenAddBrandModal()
     {
-        var result = await ModalService.Show<AddBrandForm>("Añadir Marca").Result;
+        await OpenModalAndRefresh<AddBrandForm>("Añadir Marca", RefreshBrands);
+    }
+
+    private async Task OpenAddProcessorModal()
+    {
+        await OpenModalAndRefresh<AddProcessorForm>("Añadir Procesador", RefreshProcessors);
+    }
+
+    private async Task OpenAddRAMModal()
+    {
+        await OpenModalAndRefresh<AddRAMForm>("Añadir RAM", RefreshRAMs);
+    }
+
+    private async Task OpenAddHardDriveModal()
+    {
+        await OpenModalAndRefresh<AddHardDriveForm>("Añadir Disco", RefreshHardDrives);
+    }
+
+    private async Task OpenModalAndRefresh<T>(string title, Func<Task> refreshMethod) where T : IComponent
+    {
+        var result = await ModalService.Show<T>(title).Result;
 
         if (!result.Cancelled)
         {
-            var newBrand = result.Data as Brand;
-            brands.Add(newBrand);
+            await refreshMethod();
         }
     }
-    
-    // Métodos para mostrar modales
-    private void ShowAddBrandModal() => showAddBrandModal = true;
-    private void ShowAddProcessorModal() => showAddProcessorModal = true;
-    private void ShowAddRAMModal() => showAddRAMModal = true;
-    private void ShowAddHardDriveModal() => showAddHardDriveModal = true;
 
-    // Métodos para cerrar modales y refrescar las listas
-    private void CloseAddBrandModal() => showAddBrandModal = false;
-    private void CloseAddProcessorModal() => showAddProcessorModal = false;
-    private void CloseAddRAMModal() => showAddRAMModal = false;
-    private void CloseAddHardDriveModal() => showAddHardDriveModal = false;
-
-    private async Task RefreshBrands() => brands = await Http.GetFromJsonAsync<List<Brand>>("https://localhost:5000/api/brands");
-    private async Task RefreshProcessors() => processors = await Http.GetFromJsonAsync<List<Processor>>("https://localhost:5000/api/processors");
-    private async Task RefreshRAMs() => rams = await Http.GetFromJsonAsync<List<RAM>>("https://localhost:5000/api/rams");
-    private async Task RefreshHardDrives() => hardDrives = await Http.GetFromJsonAsync<List<HardDrive>>("https://localhost:5000/api/storages");
+    private async Task RefreshBrands() => brands = await Http.GetFromJsonAsync<List<Brand>>("http://localhost:5175/api/Brands");
+    private async Task RefreshProcessors() => processors = await Http.GetFromJsonAsync<List<Processor>>("http://localhost:5175/api/Processors");
+    private async Task RefreshRAMs() => rams = await Http.GetFromJsonAsync<List<RAM>>("http://localhost:5175/api/Rams");
+    private async Task RefreshHardDrives() => hardDrives = await Http.GetFromJsonAsync<List<HardDrive>>("http://localhost:5175/api/Storages");
 
 }

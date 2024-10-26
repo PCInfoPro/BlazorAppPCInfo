@@ -5,7 +5,7 @@ using INFOPC.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Agregar cliente HTTP
-builder.Services.AddHttpClient<ComputerService>(client =>
+builder.Services.AddHttpClient<APIService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5175/api"); // URL base de tu API
 });
@@ -15,11 +15,6 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazoredModal();
 
 builder.Services.AddServerSideBlazor();
-
-// builder.Services.AddScoped<ComputerService>();
-
-
-
 
 builder.Services.AddControllersWithViews(options =>
 {

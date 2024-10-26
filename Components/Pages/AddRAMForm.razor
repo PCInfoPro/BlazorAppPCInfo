@@ -1,29 +1,50 @@
 @using UtilInfoPC.Models;
 @inject HttpClient Http
+@inject APIService APIService
 
 <EditForm Model="@newRAM" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-3">
-        <label for="BrandName" class="form-label">Nombre de la Marca</label>
-        <InputText id="BrandName" class="form-control" @bind-Value="newRAM.Name" />
+        <label for="RamName" class="form-label">Nombre de la Marca</label>
+        <InputText id="RamName" class="form-control" @bind-Value="newRAM.Name" />
+        <select id="Brand" class="form-select" @bind="newRAM.Brand">
+            <option value="">Seleccione una marca</option>
+            @foreach (var brand in brands)
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+        <select id="Type" class="form-select" @bind="newRAM.Type">
+            <option value="DRR4">DDR4</option>
+            <option value="DRR5">DDR5</option>
+        </select>
+        <select id="CapacityGB" class="form-select" @bind="newRAM.CapacityGB">
+            <option value="8">8 GB</option>
+            <option value="16">16 GB</option>
+            <option value="32">32 GB</option>
+            <option value="64">64 GB</option>
+            <option value="128">128 GB</option>
+        </select>
     </div>
-
-    <button type="submit" class="btn btn-primary">Agregar Marca</button>
+    <button type="submit" class="btn btn-primary">Agregar RAM</button>
 </EditForm>
 
 @code {
-    private RAM newRAM = new RAM();
-
     [Parameter]
     public EventCallback OnRAMAdded { get; set; }
+    private RAM newRAM = new RAM();
+    private List<Brand> brands = new List<Brand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = APIService.GetBrands().Result;
+    }
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:5000/api/rams", newRAM);
-
-        if (response.IsSuccessStatusCode)
+        if (APIService.PostRAMs(newRAM).Result)
         {
             await OnRAMAdded.InvokeAsync();
         }
