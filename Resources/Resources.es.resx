@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="WelcomeMessage" xml:space="preserve">
+        <value>Bienvenido a la web InfoPC!</value>
+    </data>
+    <data name="HelloWorld" xml:space="preserve">
+        <value>Hola mundo!</value>
+    </data>
+</root>

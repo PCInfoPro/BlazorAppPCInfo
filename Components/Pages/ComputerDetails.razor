@@ -1,5 +1,40 @@
 @page "/computer/{id:int}"
+@rendermode InteractiveServer
 @code {
     [Parameter] public int Id { get; set; }
-    // Aquí puedes obtener los detalles del ordenador según el Id.
+    private Computer? computer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Realiza una solicitud a la API para obtener los detalles del ordenador por su Id.
+        computer = await APIService.GetComputer(Id);
+    }
 }
+
+@if (computer != null)
+{
+    <div class="computer-details">
+        <h2>@computer.Name</h2>
+        <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                <strong>Procesador:</strong> @computer.Processor
+            </li>
+            <li class="list-group-item">
+                <strong>Memoria RAM:</strong> @computer.RAM GB
+            </li>
+            <li class="list-group-item">
+                <strong>Almacenamiento:</strong> @computer.Storage GB
+            </li>
+            <li class="list-group-item">
+                <strong>Precio:</strong> $@computer.Price
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <p>Cargando detalles del ordenador...</p>
+}
+

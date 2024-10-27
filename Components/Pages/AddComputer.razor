@@ -1,0 +1,237 @@
+@page "/add-computer"
+@inject Blazored.Modal.Services.IModalService ModalService
+@using System.Text.Json
+@using System.Net.Http.Headers
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h3 class="text-center mb-4">Añadir Nuevo Ordenador</h3>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <p style="color: red">@errorMessage</p>
+            }
+
+            <EditForm Model="@newComputer" FormName="AddForm" OnValidSubmit="HandleValidSubmit" class="p-4 shadow-sm rounded" style="background-color: #f8f9fa;">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <!-- Nombre del ordenador -->
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Modelo del ordenador</label>
+                    <InputText id="Name" class="form-control" placeholder="Nombre del ordenador" @bind-Value="newComputer.Name" />
+                </div>
+
+                <!-- Marca -->
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="Brand" class="form-label">Marca</label>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="Brand" class="form-select" @bind="newComputer.Brand">
+                            <option value="">Seleccione una marca</option>
+                            @foreach (var brand in brands)
+                            {
+                                <option value="@brand.Id">@brand.Name</option>
+                            }
+                        </select>
+                        <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Procesador -->
+                <div class="mb-3">
+                    <label for="Processor" class="form-label">Procesador</label>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="Processor" class="form-select" @bind="newComputer.Processor">
+                            <option value="">Seleccione un procesador</option>
+                            @foreach (var processor in processors)
+                            {
+                                <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
+                            }
+                        </select>
+                        <button type="button" class="btn btn-link" @onclick="OpenAddProcessorModal"><i class="bi bi-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Memoria RAM -->
+                <div class="mb-3">
+                    <label for="RAM" class="form-label">Memoria RAM (GB)</label>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="RAM" class="form-select" @bind="newComputer.RAM">
+                            <option value="">Seleccione la memoria RAM</option>
+                            @foreach (var ram in rams)
+                            {
+                                <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
+                            }
+                        </select>
+                        <button type="button" class="btn btn-link" @onclick="OpenAddRAMModal"><i class="bi bi-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Opción de almacenamiento: Ingreso manual o seleccionar disco -->
+                <div class="mb-3">
+                    <label class="form-label">Opciones de almacenamiento</label>
+                    
+                    <!-- Seleccionar si usar almacenamiento personalizado o existente -->
+                    <div class="form-check">
+                        <InputCheckbox id="UseCustomStorage" class="form-check-input" @bind-Value="newComputer.UseCustomStorage" />
+                        <label for="UseCustomStorage" class="form-check-label">Usar almacenamiento personalizado</label>
+                    </div>
+
+                    @if (newComputer.UseCustomStorage)
+                    {
+                        <!-- Almacenamiento personalizado (manual) -->
+                        <div class="mt-2">
+                            <label for="StorageGB" class="form-label">Almacenamiento (GB)</label>
+                            <select id="StorageGB" class="form-select" @bind="newComputer.CustomStorageGB">
+                                <option value="">Seleccione el almacenamiento</option>
+                                @foreach (var storage in storageOptions)
+                                {
+                                    <option value="@storage">@storage GB</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Seleccionar disco duro existente -->
+                        <div class="mt-2">
+                            <label for="SelectedStorage" class="form-label">Seleccionar almacenamiento del sistema</label>
+                            <div class="mt-2 d-flex align-items-center">
+                                <select id="SelectedStorage" class="form-select" @bind="newComputer.SelectedStorageId">
+                                    <option value="">Seleccione un disco duro</option>
+                                    @foreach (var drive in hardDrives)
+                                    {
+                                        <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
+                                    }
+                                </select>
+                                <button type="button" class="btn btn-link" @onclick="OpenAddHardDriveModal"><i class="bi bi-plus"></i></button>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Precio -->
+                <div class="mb-3">
+                    <label for="Price" class="form-label">Precio ($)</label>
+                    <InputNumber id="Price" class="form-control" placeholder="Ingrese el precio en USD" @bind-Value="newComputer.Price" />
+                </div>
+
+                <!-- URL de la imagen -->
+                <div class="mb-3">
+                    <label for="ImageUrl" class="form-label">URL de la imagen</label>
+                    <InputText id="ImageUrl" class="form-control" placeholder="URL de la imagen del ordenador" @bind-Value="newComputer.ImageUrl" />
+                </div>
+
+                <!-- Botón para guardar -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar Ordenador</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    #region variables
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private Computer newComputer = new Computer();
+    private List<int> storageOptions = new List<int>();
+    private List<HardDrive> hardDrives = new List<HardDrive>();
+    private List<Brand> brands = new List<Brand>();
+    private List<Processor> processors = new List<Processor>();
+    private List<RAM> rams = new List<RAM>();
+    private AuthToken token2;
+    private string errorMessage;
+    private LoginUser user = new LoginUser 
+    {
+        Username = "admin",
+        Password = "password"
+    };
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Login en API
+            await APIService.Login(user);
+            
+            // Cargar las opciones de la API
+            await RefreshHardDrives();
+            await RefreshRAMs();
+            await RefreshProcessors();
+            await RefreshBrands();
+            storageOptions = new List<int> { 128, 256, 512, 1024, 2048 };
+        }
+        catch(Exception ex)
+        {
+            logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
+        }
+        
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Almacenar el valor correcto según la elección del almacenamiento
+        if (newComputer.UseCustomStorage && newComputer.CustomStorageGB.HasValue)
+        {
+            newComputer.Storage = newComputer.CustomStorageGB.Value;
+        }
+        else if (!newComputer.UseCustomStorage && newComputer.SelectedStorageId.HasValue)
+        {
+            var selectedDrive = hardDrives.FirstOrDefault(d => d.Id == newComputer.SelectedStorageId.Value);
+            if (selectedDrive != null)
+            {
+                newComputer.Storage = selectedDrive.CapacityGB;
+            }
+        }
+
+        if (APIService.PostComputers(newComputer).Result)
+        {
+            Navigation.NavigateTo("/computers");
+        }
+        else
+        {
+            logger.Error("Error al añadir el ordenador.");
+        }
+    }
+    
+    private async Task OpenAddBrandModal()
+    {
+        await OpenModalAndRefresh<AddBrandForm>("Añadir Marca", RefreshBrands);
+    }
+
+    private async Task OpenAddProcessorModal()
+    {
+        await OpenModalAndRefresh<AddProcessorForm>("Añadir Procesador", RefreshProcessors);
+    }
+
+    private async Task OpenAddRAMModal()
+    {
+        await OpenModalAndRefresh<AddRAMForm>("Añadir RAM", RefreshRAMs);
+    }
+
+    private async Task OpenAddHardDriveModal()
+    {
+        await OpenModalAndRefresh<AddHardDriveForm>("Añadir Disco", RefreshHardDrives);
+    }
+
+    private async Task OpenModalAndRefresh<T>(string title, Func<Task> refreshMethod) where T : IComponent
+    {
+        var result = await ModalService.Show<T>(title).Result;
+
+        if (!result.Cancelled)
+        {
+            await refreshMethod();
+        }
+    }
+
+    private async Task RefreshBrands() => brands = await APIService.GetBrands();
+    private async Task RefreshProcessors() => processors = await APIService.GetProcessors();
+    private async Task RefreshRAMs() => rams = await APIService.GetRAMs();
+    private async Task RefreshHardDrives() => hardDrives = await APIService.GetStorages();
+
+}

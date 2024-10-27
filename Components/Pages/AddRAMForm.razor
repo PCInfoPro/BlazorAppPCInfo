@@ -1,0 +1,80 @@
+<div class="modal-content p-4">
+
+    <EditForm Model="@newRAM" OnValidSubmit="HandleValidSubmit" class="needs-validation">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="form-group mb-3">
+            <label for="RamName" class="form-label">Nombre del Modelo</label>
+            <InputText id="RamName" class="form-control" @bind-Value="newRAM.Name" placeholder="Ejemplo: Corsair Vengeance LPX" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Brand" class="form-label">Marca</label>
+            <select id="Brand" class="form-select" @bind="newRAM.Brand">
+                <option value="">Seleccione una marca</option>
+                @foreach (var brand in brands)
+                {
+                    <option value="@brand.Id">@brand.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Type" class="form-label">Tipo de RAM</label>
+            <select id="Type" class="form-select" @bind="newRAM.Type">
+                <option value="DDR4">DDR4</option>
+                <option value="DDR5">DDR5</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="CapacityGB" class="form-label">Capacidad</label>
+            <select id="CapacityGB" class="form-select" @bind="newRAM.CapacityGB">
+                <option value="8">8 GB</option>
+                <option value="16">16 GB</option>
+                <option value="32">32 GB</option>
+                <option value="64">64 GB</option>
+                <option value="128">128 GB</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" @onclick="CloseModal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Agregar RAM</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public Blazored.Modal.BlazoredModalInstance BlazoredModal { get; set; }
+    [Parameter]
+    public EventCallback OnRAMAdded { get; set; }
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private RAM newRAM = new RAM();
+    private List<Brand> brands = new List<Brand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await APIService.GetBrands();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (await APIService.PostRAMs(newRAM))
+        {
+            await OnRAMAdded.InvokeAsync();
+            await BlazoredModal.CloseAsync();
+        }
+        else
+        {
+            logger.Error("Error al añadir la RAM.");
+        }
+    }
+
+    private void CloseModal()
+    {
+        BlazoredModal.CancelAsync();
+    }
+}
