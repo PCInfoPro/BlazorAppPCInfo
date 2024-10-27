@@ -1,10 +1,14 @@
 @page "/computers"
-@using System.Net.Http;
-@inject HttpClient Http
-
-
+@using UtilInfoPC.Models
+@using System.Net.Http
+@using System.Text.Json
 
 <h3>Listado de Ordenadores</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
 
 <div class="computers-container">
     @foreach (var computer in computers)
@@ -25,22 +29,55 @@
 </div>
 
 @code {
-    
-    public class Computer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Processor { get; set; }
-        public string RAM { get; set; }
-        public int Storage { get; set; }
-        public double Price { get; set; }
-        public string ImageUrl { get; set; }
-    }
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
     private List<Computer> computers = new List<Computer>();
+    private LoginUser user = new LoginUser 
+    {
+        Username = "admin",
+        Password = "password"
+    };
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        computers = await Http.GetFromJsonAsync<List<Computer>>("https://apipcdata-bmbuf7bagcepajd3.canadaeast-01.azurewebsites.net/api/computers");
+        try
+        {
+            APIService.Login(user);
+            try
+            {
+                computers = await APIService.GetComputers();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
+            }
+
+            string a = "";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Login fallido. Por favor verifica tus credenciales.";            
+        }
+
+        @* computers = await Http.GetFromJsonAsync<List<Computer>>("https://apipcdata-bmbuf7bagcepajd3.canadaeast-01.azurewebsites.net/api/computers"); *@
+    }
+
+    private async Task Login()
+    {
+        @* token = await APIService.Login(user);
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            await LoadOrdenadores();
+        }
+        else
+        {
+            errorMessage = "Login fallido. Por favor verifica tus credenciales.";
+        } *@
+    }
+    private async Task LoadOrdenadores()
+    {
+        @* computers = await APIService.GetOrdenadores(token); *@
     }
 }

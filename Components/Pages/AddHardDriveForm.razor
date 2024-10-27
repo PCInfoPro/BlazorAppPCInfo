@@ -1,0 +1,70 @@
+<div class="modal-content p-4">    
+    <EditForm Model="@newHardDrive" OnValidSubmit="HandleValidSubmit" class="needs-validation">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="form-group mb-3">
+            <label for="StorageName" class="form-label">Modelo del Disco</label>
+            <InputText id="StorageName" class="form-control" @bind-Value="newHardDrive.Model" placeholder="Ejemplo: Samsung EVO 860" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Brand" class="form-label">Marca</label>
+            <select id="Brand" class="form-select" @bind="newHardDrive.Brand">
+                <option value="">Seleccione una marca</option>
+                @foreach (var brand in brands)
+                {
+                    <option value="@brand.Id">@brand.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="CapacityGB" class="form-label">Capacidad (GB)</label>
+            <select id="CapacityGB" class="form-select" @bind="newHardDrive.CapacityGB">
+                <option value="128">128 GB</option>
+                <option value="256">256 GB</option>
+                <option value="512">512 GB</option>
+                <option value="1024">1024 GB</option>
+                <option value="2048">2048 GB</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" @onclick="CloseModal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Agregar Disco</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public Blazored.Modal.BlazoredModalInstance BlazoredModal { get; set; }
+    [Parameter]
+    public EventCallback OnHardDriveAdded { get; set; }
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private HardDrive newHardDrive = new HardDrive();
+    private List<Brand> brands = new List<Brand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await APIService.GetBrands();
+    }
+    private async Task HandleValidSubmit()
+    {
+        if (await APIService.PostStorages(newHardDrive))
+        {
+            await OnHardDriveAdded.InvokeAsync();
+            await BlazoredModal.CloseAsync();
+        }
+        else
+        {
+            logger.Error("Error al añadir el disco.");
+        }
+    }
+
+    private void CloseModal()
+    {
+        BlazoredModal.CancelAsync();
+    }
+}
