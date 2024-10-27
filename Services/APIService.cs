@@ -1,7 +1,3 @@
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Net.Http.Headers;
 using UtilInfoPC.Models;
 using System.Text.Json;
@@ -9,25 +5,40 @@ using NLog;
 
 namespace INFOPC.Services
 {
-    public static class APIService
+    public class APIService
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly HttpClient _httpClient = new HttpClient();
+        private static AuthToken token = null;
 
-        private static readonly HttpClient _httpClient;
-        private static AuthToken token = new AuthToken();
-
-        static APIService()
+        public APIService(string uri)
         {
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("http://localhost:5175/api")
-            };
+            _httpClient.BaseAddress = new  Uri(uri);
         }
 
         // Obtener todos los ordenadores
         public static async Task<List<Computer>> GetComputers()
         {
-            return await _httpClient.GetFromJsonAsync<List<Computer>>("http://localhost:5175/api/Computers");
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de ordenadores.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetComputers.");
+                throw;
+            }
+        }
+
+        // Obtener un ordenador
+        public static async Task<Computer> GetComputer(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<Computer>($"{_httpClient.BaseAddress}/Computers/{id}");
         }
 
         // Obtener todos los ordenadores
@@ -35,7 +46,7 @@ namespace INFOPC.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:5175/api/Computers", computer);
+                var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Computers", computer);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -55,7 +66,7 @@ namespace INFOPC.Services
         // Obtener todos los procesadores
         public static async Task<List<Processor>> GetProcessors()
         {
-            return await _httpClient.GetFromJsonAsync<List<Processor>>("http://localhost:5175/api/Processors");
+            return await _httpClient.GetFromJsonAsync<List<Processor>>($"{_httpClient.BaseAddress}/Processors");
         }
 
         // Obtener todos los ordenadores
@@ -63,7 +74,7 @@ namespace INFOPC.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:5175/api/Processors", processor);
+                var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Processors", processor);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -83,7 +94,7 @@ namespace INFOPC.Services
         // Obtener todos los procesadores
         public static async Task<List<Brand>> GetBrands()
         {
-            return await _httpClient.GetFromJsonAsync<List<Brand>>("http://localhost:5175/api/Brands");
+            return await _httpClient.GetFromJsonAsync<List<Brand>>($"{_httpClient.BaseAddress}/Brands");
         }
 
         // Obtener todos los ordenadores
@@ -91,7 +102,7 @@ namespace INFOPC.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:5175/api/Brands", brand);
+                var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Brands", brand);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -111,7 +122,7 @@ namespace INFOPC.Services
         // Obtener todos los procesadores
         public static async Task<List<RAM>> GetRAMs()
         {
-            return await _httpClient.GetFromJsonAsync<List<RAM>>("http://localhost:5175/api/Rams");
+            return await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
         }
 
         // Obtener todos los ordenadores
@@ -119,7 +130,7 @@ namespace INFOPC.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:5175/api/Rams", ram);
+                var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Rams", ram);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -139,7 +150,7 @@ namespace INFOPC.Services
         // Obtener todos los procesadores
         public static async Task<List<HardDrive>> GetStorages()
         {
-            return await _httpClient.GetFromJsonAsync<List<HardDrive>>("http://localhost:5175/api/Storages");
+            return await _httpClient.GetFromJsonAsync<List<HardDrive>>($"{_httpClient.BaseAddress}/Storages");
         }
 
         // Obtener todos los ordenadores
@@ -147,7 +158,7 @@ namespace INFOPC.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:5175/api/Storages", hardDrive);
+                var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Storages", hardDrive);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -167,43 +178,36 @@ namespace INFOPC.Services
         // Método para hacer login y obtener el token JWT
         public static async Task<AuthToken> Login(LoginUser user)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5175/api/Auth/login");
-            request.Content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
-            
-            try
+            if(token == null)
             {
-                var response = await _httpClient.SendAsync(request);
-                if (response.IsSuccessStatusCode)
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_httpClient.BaseAddress}/Auth/login");
+                request.Content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
+                
+                try
                 {
-                    var jsonString = await response.Content.ReadAsStringAsync();
-                    token = Newtonsoft.Json.JsonConvert.DeserializeObject<AuthToken>(jsonString); // O usa System.Text.Json.JsonSerializer
+                    var response = await _httpClient.SendAsync(request);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        token = Newtonsoft.Json.JsonConvert.DeserializeObject<AuthToken>(jsonString); // O usa System.Text.Json.JsonSerializer
 
-                    logger.Info($"Token auth recibido: {token}");
-
-                    // Agregar el token JWT al encabezado de la solicitud
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-                    // var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5175/api/Auth/login");
-                    // request.Content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
-                    // var response = await _httpClient.SendAsync(request);
-                
-
-                
-                    // var jsonString = await response.Content.ReadAsStringAsync();
-                    // token = JsonSerializer.Deserialize<AuthToken>(jsonString);
-                    // _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-                    return token;
+                        logger.Info($"Token auth recibido: {token}");
+                        // Agregar el token JWT al encabezado de la solicitud
+                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+                        return token;
+                    }
+                    else
+                    {
+                        logger.Warn($"Error: {response.StatusCode}");
+                    }
                 }
-                else
+                catch(Exception ex)
                 {
-                    logger.Warn($"Error: {response.StatusCode}");
+                    logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
                 }
             }
-            catch(Exception ex)
-            {
-                logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
-            }
 
-            return null; // Si falló el login, devuelve null
+            return token; // Si falló el login, devuelve null
         }
     }
 }
