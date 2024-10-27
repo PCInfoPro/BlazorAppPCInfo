@@ -2,8 +2,8 @@
 @inject Blazored.Modal.Services.IModalService ModalService
 @using System.Text.Json
 @using System.Net.Http.Headers
-@inject HttpClient Http
 @inject NavigationManager Navigation
+@rendermode InteractiveServer
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -136,6 +136,7 @@
 
 @code {
     #region variables
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private Computer newComputer = new Computer();
     private List<int> storageOptions = new List<int>();
     private List<HardDrive> hardDrives = new List<HardDrive>();
@@ -153,19 +154,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5175/api/Auth/login");
-        request.Content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
-        var response = await Http.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var jsonString = await response.Content.ReadAsStringAsync();
-            token2 = Newtonsoft.Json.JsonConvert.DeserializeObject<AuthToken>(jsonString); // O usa System.Text.Json.JsonSerializer
-
-            Console.WriteLine($"token: {token2}");
-
-            // Agregar el token JWT al encabezado de la solicitud
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token2.Token);
+            // Login en API
+            await APIService.Login(user);
             
             // Cargar las opciones de la API
             await RefreshHardDrives();
@@ -174,26 +166,12 @@
             await RefreshBrands();
             storageOptions = new List<int> { 128, 256, 512, 1024, 2048 };
         }
-        else
+        catch(Exception ex)
         {
-            Console.WriteLine($"Error: {response.StatusCode}");
+            logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
         }
         
     }
-
-    @* private async Task HandleValidSubmit()
-    {
-        var response = await Http.PostAsJsonAsync("http://localhost:5175/api/computers", newComputer);
-        
-        if (response.IsSuccessStatusCode)
-        {
-            Navigation.NavigateTo("/computers");
-        }
-        else
-        {
-            Console.WriteLine("Error al añadir el ordenador.");
-        }
-    } *@
 
     private async Task HandleValidSubmit()
     {
@@ -211,20 +189,13 @@
             }
         }
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5175/api/Computers");   
-        request.Content = new StringContent(JsonSerializer.Serialize(newComputer), System.Text.Encoding.UTF8, "application/json");
-
-        // Agregar el token JWT al encabezado de la solicitud
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token2.Token);
-        var response = await Http.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        if (APIService.PostComputers(newComputer).Result)
         {
             Navigation.NavigateTo("/computers");
         }
         else
         {
-            Console.WriteLine("Error al añadir el ordenador.");
+            logger.Error("Error al añadir el ordenador.");
         }
     }
     
@@ -258,9 +229,9 @@
         }
     }
 
-    private async Task RefreshBrands() => brands = await Http.GetFromJsonAsync<List<Brand>>("http://localhost:5175/api/Brands");
-    private async Task RefreshProcessors() => processors = await Http.GetFromJsonAsync<List<Processor>>("http://localhost:5175/api/Processors");
-    private async Task RefreshRAMs() => rams = await Http.GetFromJsonAsync<List<RAM>>("http://localhost:5175/api/Rams");
-    private async Task RefreshHardDrives() => hardDrives = await Http.GetFromJsonAsync<List<HardDrive>>("http://localhost:5175/api/Storages");
+    private async Task RefreshBrands() => brands = await APIService.GetBrands();
+    private async Task RefreshProcessors() => processors = await APIService.GetProcessors();
+    private async Task RefreshRAMs() => rams = await APIService.GetRAMs();
+    private async Task RefreshHardDrives() => hardDrives = await APIService.GetStorages();
 
 }

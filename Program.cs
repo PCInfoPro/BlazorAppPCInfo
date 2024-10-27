@@ -1,14 +1,8 @@
 using BlazorAppPCInfo.Components;
 using Blazored.Modal;
-using INFOPC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Agregar cliente HTTP
-builder.Services.AddHttpClient<APIService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5175/api"); // URL base de tu API
-});
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

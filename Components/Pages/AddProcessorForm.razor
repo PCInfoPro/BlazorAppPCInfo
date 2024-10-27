@@ -1,35 +1,81 @@
-@using UtilInfoPC.Models;
-@inject HttpClient Http
+<div class="modal-content p-4">
+    <EditForm Model="@newProcessor" OnValidSubmit="HandleValidSubmit" class="needs-validation">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
 
-<EditForm Model="@newProcessor" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+        <div class="form-group mb-3">
+            <label for="ProcessorName" class="form-label">Nombre del Procesador</label>
+            <InputText id="ProcessorName" class="form-control" @bind-Value="newProcessor.Model" placeholder="Ejemplo: Intel Core i7" />
+        </div>
 
-    <div class="mb-3">
-        <label for="BrandName" class="form-label">Nombre del procesador</label>
-        <InputText id="BrandName" class="form-control" @bind-Value="newProcessor.Model" />
-    </div>
+        <div class="form-group mb-3">
+            <label for="Brand" class="form-label">Marca</label>
+            <select id="Brand" class="form-select" @bind="newProcessor.Brand">
+                <option value="">Seleccione una marca</option>
+                @foreach (var brand in brands)
+                {
+                    <option value="@brand.Id">@brand.Name</option>
+                }
+            </select>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Agregar procesador</button>
-</EditForm>
+        <div class="form-group mb-3">
+            <label for="Cores" class="form-label">Núcleos</label>
+            <select id="Cores" class="form-select" @bind="newProcessor.Cores">
+                <option value="1">1 núcleo</option>
+                <option value="2">2 núcleos</option>
+                <option value="4">4 núcleos</option>
+                <option value="8">8 núcleos</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Frequency" class="form-label">Frecuencia</label>
+            <select id="Frequency" class="form-select" @bind="newProcessor.Frequency">
+                <option value="800">800 MHz</option>
+                <option value="1600">1600 MHz</option>
+                <option value="3200">3200 MHz</option>
+                <option value="5000">5000 MHz</option>
+                <option value="6000">6000 MHz</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" @onclick="CloseModal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Agregar Procesador</button>
+        </div>
+    </EditForm>
+</div>
 
 @code {
-    private Processor newProcessor = new Processor();
-
+    [CascadingParameter] 
+    public Blazored.Modal.BlazoredModalInstance BlazoredModal { get; set; }
     [Parameter]
     public EventCallback OnProcessorAdded { get; set; }
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private Processor newProcessor = new Processor();
+    private List<Brand> brands = new List<Brand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await APIService.GetBrands();
+    }
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:5000/api/Processors", newProcessor);
-
-        if (response.IsSuccessStatusCode)
+        if (await APIService.PostProcessors(newProcessor))
         {
             await OnProcessorAdded.InvokeAsync();
+            await BlazoredModal.CloseAsync();
         }
         else
         {
-            Console.WriteLine("Error al añadir la marca.");
+            logger.Error("Error al añadir la RAM.");
         }
+    }
+
+    private void CloseModal()
+    {
+        BlazoredModal.CancelAsync();
     }
 }
