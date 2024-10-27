@@ -1,8 +1,6 @@
 @page "/computers"
-@using UtilInfoPC.Models
-@using System.Net.Http
-@using System.Text.Json
-
+@inject IStringLocalizer<Index> Localizer
+    
 <h3>Listado de Ordenadores</h3>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -43,7 +41,7 @@
     {
         try
         {
-            APIService.Login(user);
+            await APIService.Login(user);
             try
             {
                 computers = await APIService.GetComputers();
@@ -52,32 +50,10 @@
             {
                 logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
             }
-
-            string a = "";
         }
         catch (Exception ex)
         {
             errorMessage = "Login fallido. Por favor verifica tus credenciales.";            
         }
-
-        @* computers = await Http.GetFromJsonAsync<List<Computer>>("https://apipcdata-bmbuf7bagcepajd3.canadaeast-01.azurewebsites.net/api/computers"); *@
-    }
-
-    private async Task Login()
-    {
-        @* token = await APIService.Login(user);
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            await LoadOrdenadores();
-        }
-        else
-        {
-            errorMessage = "Login fallido. Por favor verifica tus credenciales.";
-        } *@
-    }
-    private async Task LoadOrdenadores()
-    {
-        @* computers = await APIService.GetOrdenadores(token); *@
     }
 }
