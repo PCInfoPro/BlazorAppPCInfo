@@ -2,6 +2,11 @@
 
 <h3>Buscar Ordenadores</h3>
 
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+
 <div class="filters-container">
     <div class="row mb-3">
         <div class="col-md-4">
@@ -12,7 +17,7 @@
                 <option value="">Todos los procesadores</option>
                 @foreach (var processor in processors)
                 {
-                    <option value="@processor">@processor</option>
+                    <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
                 }
             </select>
         </div>
@@ -21,7 +26,7 @@
                 <option value="">Todas las RAM</option>
                 @foreach (var ram in rams)
                 {
-                    <option value="@ram">@ram</option>
+                    <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
                 }
             </select>
         </div>
@@ -58,41 +63,63 @@
 </div>
 
 @code {
-    public class Computer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Processor { get; set; }
-        public string RAM { get; set; }
-        public string Storage { get; set; }
-        public decimal Price { get; set; }
-        public string ImageUrl { get; set; }
-    }
-
+    private List<int> storageOptions = new List<int>();
+    private List<Computer> computers = new List<Computer>();
+    private List<HardDrive> hardDrives = new List<HardDrive>();
+    private List<Brand> brands = new List<Brand>();
+    private List<Processor> processors = new List<Processor>();
+    private List<RAM> rams = new List<RAM>();
     // Campos de filtro
     private string searchTerm = string.Empty;
     private string selectedProcessor = string.Empty;
-    private string selectedRAM = string.Empty;
+    private int? selectedRAM;
     private decimal? minPrice;
     private decimal? maxPrice;
-
-    private List<string> processors = new List<string> { "Intel", "AMD", "Apple M1", "Apple M2" };
-    private List<string> rams = new List<string> { "8GB", "16G", "32GB", "64GB" };
-
-    // Lista de ordenadores originales
-    private List<Computer> computers = new List<Computer>
+    private string errorMessage;
+    private LoginUser user = new LoginUser 
     {
-        new Computer { Id = 1, Name = "PC 1", Processor = "Intel i7", RAM = "16GB", Storage = "512GB SSD", Price = 1200, ImageUrl = "https://imgs.search.brave.com/OGm6SAqrFv_YJ0vXWGJdpU2fGwI2t2p_8E7gsHmEfUg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTY0/NjM3MDc5L2VzL2Zv/dG8vY29tcHV0YWRv/cmEtcG9ydCVDMyVB/MXRpbC5qcGc_cz02/MTJ4NjEyJnc9MCZr/PTIwJmM9ZXdZeHFa/M214RjZzVVVFd1RE/VlAxdHRsZWRNeFdS/QkFMZ0RXNXptSlZC/ND0" },
-        new Computer { Id = 2, Name = "PC 2", Processor = "AMD Ryzen 5", RAM = "8GB", Storage = "256GB SSD", Price = 800, ImageUrl = "https://imgs.search.brave.com/OGm6SAqrFv_YJ0vXWGJdpU2fGwI2t2p_8E7gsHmEfUg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTY0/NjM3MDc5L2VzL2Zv/dG8vY29tcHV0YWRv/cmEtcG9ydCVDMyVB/MXRpbC5qcGc_cz02/MTJ4NjEyJnc9MCZr/PTIwJmM9ZXdZeHFa/M214RjZzVVVFd1RE/VlAxdHRsZWRNeFdS/QkFMZ0RXNXptSlZC/ND0" },
-        new Computer { Id = 3, Name = "PC 3", Processor = "Intel i5", RAM = "8GB", Storage = "1TB HDD", Price = 600, ImageUrl = "https://imgs.search.brave.com/OGm6SAqrFv_YJ0vXWGJdpU2fGwI2t2p_8E7gsHmEfUg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTY0/NjM3MDc5L2VzL2Zv/dG8vY29tcHV0YWRv/cmEtcG9ydCVDMyVB/MXRpbC5qcGc_cz02/MTJ4NjEyJnc9MCZr/PTIwJmM9ZXdZeHFa/M214RjZzVVVFd1RE/VlAxdHRsZWRNeFdS/QkFMZ0RXNXptSlZC/ND0" },
-        // Agrega más ordenadores...
+        Username = "admin",
+        Password = "password"
     };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await APIService.Login(user);
+            try
+            {
+                // Cargar las opciones de la API
+                await RefreshHardDrives();
+                await RefreshRAMs();
+                await RefreshProcessors();
+                await RefreshBrands();
+                computers = await APIService.GetComputers();
+            }
+            catch (Exception ex)
+            {
+               errorMessage = "Error en carga de datos: " + ex.Message + ex.StackTrace;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Login fallido. Por favor verifica tus credenciales.";            
+        }
+    }
+
 
     // Lógica de filtrado aplicada
     private IEnumerable<Computer> filteredComputers => computers.Where(c =>
         (string.IsNullOrWhiteSpace(searchTerm) || c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) &&
         (string.IsNullOrWhiteSpace(selectedProcessor) || c.Processor.Contains(selectedProcessor, StringComparison.OrdinalIgnoreCase)) &&
-        (string.IsNullOrWhiteSpace(selectedRAM) || c.RAM.Equals(selectedRAM, StringComparison.OrdinalIgnoreCase)) &&
+        (!selectedRAM.HasValue || c.RAM.Equals(selectedRAM)) &&
         (!minPrice.HasValue || c.Price >= minPrice) &&
         (!maxPrice.HasValue || c.Price <= maxPrice));
+    
+    
+
+    private async Task RefreshBrands() => brands = await APIService.GetBrands();
+    private async Task RefreshProcessors() => processors = await APIService.GetProcessors();
+    private async Task RefreshRAMs() => rams = await APIService.GetRAMs();
+    private async Task RefreshHardDrives() => hardDrives = await APIService.GetStorages();
 }

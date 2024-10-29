@@ -42,14 +42,15 @@ namespace INFOPC.Services
         }
 
         // Obtener todos los ordenadores
-        public static async Task<bool> PostComputers(Computer computer)
+        public static async Task<Computer> PostComputers(Computer computer)
         {
             try
             {
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Computers", computer);
+                var jsonString = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    return true;
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<Computer>(jsonString);;
                 }
                 else
                 {
@@ -60,7 +61,7 @@ namespace INFOPC.Services
             {
                 logger.Error("Error on PostComputers: " + ex.Message + ex.StackTrace);
             }
-            return false;
+            return null;
         }
 
         // Obtener todos los procesadores
