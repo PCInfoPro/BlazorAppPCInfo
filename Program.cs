@@ -1,20 +1,17 @@
 using BlazorAppPCInfo.Components;
 using Blazored.Modal;
 using INFOPC.Services;
-using Microsoft.Extensions.Localization;
 using NLog; 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ConfigurationService>(builder.Configuration);
+
 new APIService(builder.Configuration.GetSection("API").Value);
 
-builder.Services.AddLocalization(); 
-builder.Services.AddControllersWithViews()
-    .AddViewLocalization() 
-    .AddDataAnnotationsLocalization();
+builder.Services.AddLocalization();
 
-// builder.Services.Configure<IStringLocalizer>(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
 
@@ -33,13 +30,18 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
 });
 
+builder.Services.AddControllers();
+
+
 var app = builder.Build();
 
-var supportedCultures = new[] { "en", "es" }; 
+
+var supportedCultures = new[] { "en-US", "es-ES" };
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture(supportedCultures[0])
     .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures); 
+    .AddSupportedUICultures(supportedCultures);
+
 app.UseRequestLocalization(localizationOptions);
 
 
@@ -51,18 +53,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// // Configurar localización para que use la cultura del usuario
-// var supportedCultures = new[] { "en", "es" };  // Idiomas admitidos
-// var localizationOptions = new RequestLocalizationOptions()
-//     .SetDefaultCulture(supportedCultures[0])
-//     .AddSupportedCultures(supportedCultures)
-//     .AddSupportedUICultures(supportedCultures);
-// app.UseRequestLocalization(localizationOptions);
-
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.MapControllers();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

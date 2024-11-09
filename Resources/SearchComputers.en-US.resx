@@ -117,8 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="head" xml:space="preserve">
+    <value>Search computers</value>
+    <comment>None</comment>
+  </data>
+  <data name="filterProcessor" xml:space="preserve">
+    <value>All processors</value>
+    <comment>None</comment>
+  </data>
+  <data name="filterRAM" xml:space="preserve">
+    <value>All RAM</value>
+    <comment>None</comment>
+  </data>
+  <data name="noSearchData" xml:space="preserve">
+    <value>No results match the selected filters.</value>
+    <comment>None</comment>
+  </data>
+  <data name="searchByName" xml:space="preserve">
+    <value>Search by name...</value>
     <comment>None</comment>
   </data>
 </root>

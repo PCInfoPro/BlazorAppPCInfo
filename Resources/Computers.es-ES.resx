@@ -117,8 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="Greeting" xml:space="preserve">
+    <value>Welcome!</value>
+    <comment>None</comment>
+  </data>
+  <data name="head" xml:space="preserve">
+    <value>Listado de Ordenadores</value>
     <comment>None</comment>
   </data>
 </root>

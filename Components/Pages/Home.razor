@@ -1,11 +1,10 @@
 ﻿@page "/"
-@inject IStringLocalizer<Resources> Localizer
+@inject IStringLocalizer<BlazorAppPCInfo.Home> Localizer
+@inject IStringLocalizer<Resources> LocResources
 
 <PageTitle>Home</PageTitle>
 
-<h1>Welcome!</h1>
-
-<h2>@Localizer["HelloWorld"]</h2>
+<h1>@Localizer["greeting"]</h1>
 
 <div class="card mb-4">
     <div class="card-body">

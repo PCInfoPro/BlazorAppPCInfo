@@ -1,6 +1,8 @@
 @page "/searchcomputers"
+@inject IStringLocalizer<BlazorAppPCInfo.SearchComputers> Localizer
+@inject IStringLocalizer<Resources> LocResources
 
-<h3>Buscar Ordenadores</h3>
+<h3>@Localizer["head"]</h3>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -10,11 +12,11 @@
 <div class="filters-container">
     <div class="row mb-3">
         <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Buscar por nombre..." @bind="searchTerm" />
+            <input type="text" class="form-control" placeholder="@Localizer["searchByName"]" @bind="searchTerm" />
         </div>
         <div class="col-md-4">
             <select class="form-control" @bind="selectedProcessor">
-                <option value="">Todos los procesadores</option>
+                <option value="">@Localizer["filterProcessor"]</option>
                 @foreach (var processor in processors)
                 {
                     <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
@@ -23,7 +25,7 @@
         </div>
         <div class="col-md-4">
             <select class="form-control" @bind="selectedRAM">
-                <option value="">Todas las RAM</option>
+                <option value="">@Localizer["filterRAM"]</option>
                 @foreach (var ram in rams)
                 {
                     <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
@@ -47,10 +49,10 @@
                     </div>
                     <h4>@computer.Name</h4>
                     <ul>
-                        <li><i class="bi bi-cpu"></i> Procesador: @computer.Processor</li>
-                        <li><i class="bi bi-memory"></i> Memoria RAM: @computer.RAM</li>
-                        <li><i class="bi bi-hdd"></i> Almacenamiento: @computer.Storage</li>
-                        <li><i class="bi bi-currency-dollar"></i> Precio: $@computer.Price</li>
+                        <li><i class="bi bi-cpu"></i> @LocResources["processor"]: @computer.Processor</li>
+                        <li><i class="bi bi-memory"></i> @LocResources["ram"]: @computer.RAM</li>
+                        <li><i class="bi bi-hdd"></i> @LocResources["memory"]: @computer.Storage</li>
+                        <li><i class="bi bi-currency-dollar"></i> @LocResources["price"]: $@computer.Price</li>
                     </ul>
                 </a>
             }
@@ -58,7 +60,7 @@
     }
     else
     {
-        <p>No se encontraron ordenadores que coincidan con los filtros.</p>
+        <p>@Localizer["noSearchData"]</p>
     }
 </div>
 
@@ -98,12 +100,12 @@
             }
             catch (Exception ex)
             {
-               errorMessage = "Error en carga de datos: " + ex.Message + ex.StackTrace;
+               errorMessage = LocResources["loadError"] + ex.Message + ex.StackTrace;
             }
         }
         catch (Exception ex)
         {
-            errorMessage = "Login fallido. Por favor verifica tus credenciales.";            
+            errorMessage = LocResources["loginFail"];            
         }
     }
 
