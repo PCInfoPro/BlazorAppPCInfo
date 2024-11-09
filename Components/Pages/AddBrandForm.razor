@@ -1,4 +1,6 @@
 @inject Blazored.Modal.Services.IModalService ModalService
+@inject IStringLocalizer<BlazorAppPCInfo.AddBrandForm> Localizer
+@inject IStringLocalizer<Resources> LocResources
 
 <div class="modal-content p-4">    
     <EditForm Model="@brandModel" OnValidSubmit="HandleValidSubmit" class="needs-validation">
@@ -6,13 +8,13 @@
         <ValidationSummary class="text-danger" />
 
         <div class="form-group mb-3">
-            <label for="brandName" class="form-label">Nombre de la Marca:</label>
+            <label for="brandName" class="form-label">@Localizer["nmae"]:</label>
             <InputText @bind-Value="brandModel.Name" id="brandName" class="form-control" placeholder="Ejemplo: Apple, Dell, etc." />
         </div>
         
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" @onclick="CloseModal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar Marca</button>
+            <button type="button" class="btn btn-secondary me-2" @onclick="CloseModal">@LocResources["cancel"]</button>
+            <button type="submit" class="btn btn-primary">@LocResources["save"]</button>
         </div>
     </EditForm>
 </div>
@@ -34,7 +36,7 @@
         }
         else
         {
-            logger.Error("Error al añadir la marca.");
+            logger.Error(Localizer["saveError"]);
         }
     }
 

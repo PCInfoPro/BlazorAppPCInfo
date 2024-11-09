@@ -117,8 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="name" xml:space="preserve">
+    <value>Nombre de la Marca</value>
+    <comment>None</comment>
+  </data>
+  <data name="saveError" xml:space="preserve">
+    <value>Error al añadir la marca.</value>
     <comment>None</comment>
   </data>
 </root>

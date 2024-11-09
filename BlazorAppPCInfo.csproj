@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
     <PackageReference Include="NLog" Version="5.3.4" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="UtilInfoPC" Version="1.0.0" />
   </ItemGroup>
   <PropertyGroup>

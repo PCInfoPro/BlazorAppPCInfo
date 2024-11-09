@@ -117,8 +117,80 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="head" xml:space="preserve">
+    <value>Añadir Nuevo Ordenador</value>
+    <comment>None</comment>
+  </data>
+  <data name="pcmodel" xml:space="preserve">
+    <value>Modelo del ordenador</value>
+    <comment>None</comment>
+  </data>
+  <data name="pcname" xml:space="preserve">
+    <value>Nombre del ordenador</value>
+    <comment>None</comment>
+  </data>
+  <data name="brandchoose" xml:space="preserve">
+    <value>Seleccione una marca</value>
+    <comment>None</comment>
+  </data>
+  <data name="processorchoose" xml:space="preserve">
+    <value>Seleccione un procesador</value>
+    <comment>None</comment>
+  </data>
+  <data name="ramchoose" xml:space="preserve">
+    <value>Seleccione la memoria RAM</value>
+    <comment>None</comment>
+  </data>
+  <data name="storageoptions" xml:space="preserve">
+    <value>Opciones de almacenamiento</value>
+    <comment>None</comment>
+  </data>
+  <data name="choosecustomizestorage" xml:space="preserve">
+    <value>Usar almacenamiento personalizado</value>
+    <comment>None</comment>
+  </data>
+  <data name="storagechoose" xml:space="preserve">
+    <value>Seleccione el almacenamiento</value>
+    <comment>None</comment>
+  </data>
+  <data name="systemstorage" xml:space="preserve">
+    <value>Seleccionar almacenamiento del sistema</value>
+    <comment>None</comment>
+  </data>
+  <data name="sddoptions" xml:space="preserve">
+    <value>Seleccione un disco duro</value>
+    <comment>None</comment>
+  </data>
+  <data name="urlimage" xml:space="preserve">
+    <value>URL de la imagen</value>
+    <comment>None</comment>
+  </data>
+  <data name="addError" xml:space="preserve">
+    <value>Error al añadir el ordenador.</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalbrand" xml:space="preserve">
+    <value>Añadir Marca</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalprocessor" xml:space="preserve">
+    <value>Añadir Procesador</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalRAM" xml:space="preserve">
+    <value>Añadir RAM</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalStorage" xml:space="preserve">
+    <value>Añadir Disco</value>
+    <comment>None</comment>
+  </data>
+  <data name="placeholderurl" xml:space="preserve">
+    <value>URL de la imagen del ordenador</value>
+    <comment>None</comment>
+  </data>
+  <data name="placeholderprice" xml:space="preserve">
+    <value>Ingrese el precio en USD</value>
     <comment>None</comment>
   </data>
 </root>
