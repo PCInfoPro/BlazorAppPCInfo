@@ -2,17 +2,17 @@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
-<p>
-    <label>
-        Select your locale:
-        <select @bind="selectedCulture" @bind:after="ApplySelectedCultureAsync">
-            @foreach (var culture in supportedCultures)
-            {
-                <option value="@culture">@culture.DisplayName</option>
-            }
-        </select>
-    </label>
-</p>
+<div class="locale-dropdown">
+    <button class="locale-selected" @onclick="ToggleDropdown">@selectedCulture.DisplayName</button>
+    <div class="locale-options" style="display: @(isDropdownOpen ? "block" : "none")">
+        @foreach (var culture in supportedCultures)
+        {
+            <button type="button" class="locale-option" @onclick="() => SelectCulture(culture)">
+                @culture.DisplayName
+            </button>
+        }
+    </div>
+</div>
 
 @code
 {
@@ -29,6 +29,9 @@
         selectedCulture = CultureInfo.CurrentCulture;
     }
 
+    private bool isDropdownOpen;
+    private void ToggleDropdown() => isDropdownOpen = !isDropdownOpen;
+
     private async Task ApplySelectedCultureAsync()
     {
         if (CultureInfo.CurrentCulture != selectedCulture)
@@ -42,5 +45,12 @@
                 $"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
                 forceLoad: true);
         }
+    }
+
+    private async Task SelectCulture(CultureInfo culture)
+    {
+        selectedCulture = culture;
+        isDropdownOpen = false;
+        await ApplySelectedCultureAsync();
     }
 }
