@@ -1,10 +1,13 @@
 ﻿@inherits LayoutComponentBase
 @inject IStringLocalizer<BlazorAppPCInfo.About> Localizer
 
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
+
+    <LoadingIndicator IsLoading="@IsLoading" />
 
     <main>
         <div class="top-row px-4">
@@ -12,7 +15,7 @@
                 <CultureSelector />
             </article>
 
-            <a href="/about" class="about-link">@Localizer["aboutUs"]</a>
+            <a href="/about" class="btn-link">@Localizer["aboutUs"]</a>
         </div>
 
         <article class="content px-4">
@@ -27,3 +30,23 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code{
+    private bool IsLoading = false;
+
+    protected override void OnInitialized()
+    {
+        APIService.OnLoadingChanged += UpdateLoadingState;
+    }
+
+    private void UpdateLoadingState(bool isLoading)
+    {
+        IsLoading = isLoading;
+        InvokeAsync(StateHasChanged); // Asegura la actualización en la UI
+    }
+
+    public void Dispose()
+    {
+        APIService.OnLoadingChanged -= UpdateLoadingState;
+    }
+}

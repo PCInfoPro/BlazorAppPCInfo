@@ -29,6 +29,7 @@
                 <!-- Marca -->
                 <div class="mb-3">
                     <label for="Brand" class="form-label">@LocResources["brand"]</label>
+                    <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
                         <select id="Brand" class="form-select" @bind="newComputer.Brand">
                             <option value="">@Localizer["brandchoose"]</option>
@@ -37,13 +38,13 @@
                                 <option value="@brand.Id">@brand.Name</option>
                             }
                         </select>
-                        <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
                     </div>
                 </div>
 
                 <!-- Procesador -->
                 <div class="mb-3">
                     <label for="Processor" class="form-label">@LocResources["processor"]</label>
+                    <button type="button" class="btn btn-link" @onclick="OpenAddProcessorModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
                         <select id="Processor" class="form-select" @bind="newComputer.Processor">
                             <option value="">@Localizer["processorchoose"]</option>
@@ -52,13 +53,13 @@
                                 <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
                             }
                         </select>
-                        <button type="button" class="btn btn-link" @onclick="OpenAddProcessorModal"><i class="bi bi-plus"></i></button>
                     </div>
                 </div>
 
                 <!-- Memoria RAM -->
                 <div class="mb-3">
                     <label for="RAM" class="form-label">@LocResources["ram"] (GB)</label>
+                    <button type="button" class="btn btn-link" @onclick="OpenAddRAMModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
                         <select id="RAM" class="form-select" @bind="newComputer.RAM">
                             <option value="">@Localizer["ramchoose"]</option>
@@ -67,14 +68,13 @@
                                 <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
                             }
                         </select>
-                        <button type="button" class="btn btn-link" @onclick="OpenAddRAMModal"><i class="bi bi-plus"></i></button>
                     </div>
                 </div>
 
                 <!-- Opción de almacenamiento: Ingreso manual o seleccionar disco -->
                 <div class="mb-3">
                     <label class="form-label">@Localizer["storageoptions"]</label>
-                    
+                    <button type="button" class="btn btn-link" @onclick="OpenAddHardDriveModal"><i class="bi bi-plus"></i></button>
                     <!-- Seleccionar si usar almacenamiento personalizado o existente -->
                     <div class="form-check">
                         <InputCheckbox id="UseCustomStorage" class="form-check-input" @bind-Value="newComputer.UseCustomStorage" />
@@ -108,7 +108,6 @@
                                         <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
                                     }
                                 </select>
-                                <button type="button" class="btn btn-link" @onclick="OpenAddHardDriveModal"><i class="bi bi-plus"></i></button>
                             </div>
                         </div>
                     }

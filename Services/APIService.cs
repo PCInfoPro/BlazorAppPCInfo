@@ -10,10 +10,16 @@ namespace INFOPC.Services
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly HttpClient _httpClient = new HttpClient();
         private static AuthToken token = null;
+        public static event Action<bool> OnLoadingChanged;
 
         public APIService(string uri)
         {
             _httpClient.BaseAddress = new  Uri(uri);
+        }
+
+        private static void ToggleLoading(bool isLoading)
+        {
+            OnLoadingChanged?.Invoke(isLoading);
         }
 
         // Obtener todos los ordenadores
@@ -21,7 +27,11 @@ namespace INFOPC.Services
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+                
+                ToggleLoading(true);
+                List<Computer> result = await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+                // ToggleLoading(false);
+                return result;
             }
             catch (HttpRequestException ex)
             {
