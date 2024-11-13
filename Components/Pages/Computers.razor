@@ -1,7 +1,10 @@
 @page "/computers"
-@inject IStringLocalizer<Index> Localizer
-    
-<h3>Listado de Ordenadores</h3>
+@inject IStringLocalizer<BlazorAppPCInfo.Computers> Localizer
+@inject IStringLocalizer<Resources> LocResources
+
+<PageTitle>Computers</PageTitle>
+
+<h3>@Localizer["head"]</h3>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -17,10 +20,10 @@
             </div>
             <h4>@computer.Name</h4>
             <ul>
-                <li><i class="bi bi-cpu"></i> Procesador: @computer.Processor</li>
-                <li><i class="bi bi-memory"></i> Memoria RAM: @computer.RAM</li>
-                <li><i class="bi bi-hdd"></i> Almacenamiento: @computer.Storage</li>
-                <li><i class="bi bi-currency-dollar"></i> Precio: $@computer.Price</li>
+                <li><i class="bi bi-cpu"></i> @LocResources["processor"]: @computer.Processor</li>
+                <li><i class="bi bi-memory"></i> @LocResources["ram"]: @computer.RAM</li>
+                <li><i class="bi bi-hdd"></i> @LocResources["memory"]: @computer.Storage</li>
+                <li><i class="bi bi-currency-dollar"></i> @LocResources["price"]: $@computer.Price</li>
             </ul>
         </a>
     }
@@ -48,12 +51,12 @@
             }
             catch (Exception ex)
             {
-                logger.Error("Error en carga de datos: " + ex.Message + ex.StackTrace);
+                logger.Error(@LocResources["loadError"] + ex.Message + ex.StackTrace);
             }
         }
         catch (Exception ex)
         {
-            errorMessage = "Login fallido. Por favor verifica tus credenciales.";            
+            errorMessage = @Localizer["loginfail"];            
         }
     }
 }

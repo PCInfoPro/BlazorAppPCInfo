@@ -1,0 +1,56 @@
+@using System.Globalization
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<div class="locale-dropdown">
+    <button class="locale-selected" @onclick="ToggleDropdown">@selectedCulture.DisplayName</button>
+    <div class="locale-options" style="display: @(isDropdownOpen ? "block" : "none")">
+        @foreach (var culture in supportedCultures)
+        {
+            <button type="button" class="locale-option" @onclick="() => SelectCulture(culture)">
+                @culture.DisplayName
+            </button>
+        }
+    </div>
+</div>
+
+@code
+{
+    private CultureInfo[] supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("es-ES"),
+    };
+
+    private CultureInfo? selectedCulture;
+
+    protected override void OnInitialized()
+    {
+        selectedCulture = CultureInfo.CurrentCulture;
+    }
+
+    private bool isDropdownOpen;
+    private void ToggleDropdown() => isDropdownOpen = !isDropdownOpen;
+
+    private async Task ApplySelectedCultureAsync()
+    {
+        if (CultureInfo.CurrentCulture != selectedCulture)
+        {
+            var uri = new Uri(Navigation.Uri)
+                .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+            var cultureEscaped = Uri.EscapeDataString(selectedCulture.Name);
+            var uriEscaped = Uri.EscapeDataString(uri);
+
+            Navigation.NavigateTo(
+                $"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+                forceLoad: true);
+        }
+    }
+
+    private async Task SelectCulture(CultureInfo culture)
+    {
+        selectedCulture = culture;
+        isDropdownOpen = false;
+        await ApplySelectedCultureAsync();
+    }
+}

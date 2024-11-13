@@ -117,8 +117,80 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="head" xml:space="preserve">
+    <value>Add new Computer</value>
+    <comment>None</comment>
+  </data>
+  <data name="pcmodel" xml:space="preserve">
+    <value>Computer model</value>
+    <comment>None</comment>
+  </data>
+  <data name="pcname" xml:space="preserve">
+    <value>Nombre del ordenador</value>
+    <comment>None</comment>
+  </data>
+  <data name="brandchoose" xml:space="preserve">
+    <value>Select brand</value>
+    <comment>None</comment>
+  </data>
+  <data name="processorchoose" xml:space="preserve">
+    <value>Select processor</value>
+    <comment>None</comment>
+  </data>
+  <data name="ramchoose" xml:space="preserve">
+    <value>Select RAM</value>
+    <comment>None</comment>
+  </data>
+  <data name="storageoptions" xml:space="preserve">
+    <value>Storage options</value>
+    <comment>None</comment>
+  </data>
+  <data name="choosecustomizestorage" xml:space="preserve">
+    <value>Use custom storage</value>
+    <comment>None</comment>
+  </data>
+  <data name="storagechoose" xml:space="preserve">
+    <value>Select storage</value>
+    <comment>None</comment>
+  </data>
+  <data name="systemstorage" xml:space="preserve">
+    <value>Select system storage</value>
+    <comment>None</comment>
+  </data>
+  <data name="sddoptions" xml:space="preserve">
+    <value>Select Hard Drive</value>
+    <comment>None</comment>
+  </data>
+  <data name="urlimage" xml:space="preserve">
+    <value>Image URL</value>
+    <comment>None</comment>
+  </data>
+  <data name="addError" xml:space="preserve">
+    <value>Add computer fail</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalbrand" xml:space="preserve">
+    <value>Add Brand</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalprocessor" xml:space="preserve">
+    <value>Add Processor</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalRAM" xml:space="preserve">
+    <value>Add RAM</value>
+    <comment>None</comment>
+  </data>
+  <data name="titlemodalStorage" xml:space="preserve">
+    <value>Add Hard Drive</value>
+    <comment>None</comment>
+  </data>
+  <data name="placeholderurl" xml:space="preserve">
+    <value>Image URL: http://...</value>
+    <comment>None</comment>
+  </data>
+  <data name="placeholderprice" xml:space="preserve">
+    <value>Price in USD $</value>
     <comment>None</comment>
   </data>
 </root>

@@ -117,8 +117,44 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="save" xml:space="preserve">
+    <value>Save</value>
+    <comment>None</comment>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>None</comment>
+  </data>
+  <data name="processor" xml:space="preserve">
+    <value>Processor</value>
+    <comment>None</comment>
+  </data>
+  <data name="ram" xml:space="preserve">
+    <value>RAM</value>
+    <comment>None</comment>
+  </data>
+  <data name="memory" xml:space="preserve">
+    <value>Memory</value>
+    <comment>None</comment>
+  </data>
+  <data name="price" xml:space="preserve">
+    <value>Price</value>
+    <comment>None</comment>
+  </data>
+  <data name="loginfail" xml:space="preserve">
+    <value>Login fail. Please check your credentials.</value>
+    <comment>None</comment>
+  </data>
+  <data name="loadError" xml:space="preserve">
+    <value>Error en carga de datos: </value>
+    <comment>None</comment>
+  </data>
+  <data name="brand" xml:space="preserve">
+    <value>Brand</value>
+    <comment>None</comment>
+  </data>
+  <data name="computer" xml:space="preserve">
+    <value>Computer</value>
     <comment>None</comment>
   </data>
 </root>

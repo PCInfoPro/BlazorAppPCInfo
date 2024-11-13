@@ -117,8 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="title" xml:space="preserve">
-    <value>Info PC</value>
+  <data name="aboutUs" xml:space="preserve">
+    <value>Sobre nosotros</value>
+    <comment>None</comment>
+  </data>
+  <data name="textAboutUs" xml:space="preserve">
+    <value>Bienvenido a nuestro sitio web. Nuestra misión es ofrecer la mejor información sobre ordenadores, especificaciones técnicas y recomendaciones. Aquí podrá buscar ordenadores, comparar especificaciones y tomar decisiones informadas con facilidad.</value>
+    <comment>None</comment>
+  </data>
+  <data name="textAboutTeam" xml:space="preserve">
+    <value>Nuestro equipo está formado por un grupo de apasionados de la tecnología, dedicados a ofrecerle la información más reciente y precisa sobre informática y tecnología.</value>
+    <comment>None</comment>
+  </data>
+  <data name="textAboutMission" xml:space="preserve">
+    <value>Nos esforzamos por hacer que la tecnología sea accesible y comprensible para todos, ayudándole a tomar decisiones inteligentes a la hora de elegir su próximo dispositivo.</value>
+    <comment>None</comment>
+  </data>
+  <data name="aboutMission" xml:space="preserve">
+    <value>Nuestra misión</value>
+    <comment>None</comment>
+  </data>
+  <data name="aboutTeam" xml:space="preserve">
+    <value>Nuestro equipo</value>
     <comment>None</comment>
   </data>
 </root>

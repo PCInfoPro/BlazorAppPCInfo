@@ -1,0 +1,62 @@
+/* Estilo del contenedor y botón seleccionado */
+.locale-label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+.locale-dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 200px;
+}
+
+.locale-selected {
+    width: 100%;
+    padding: 2px;
+    font-size: 0.8rem;
+    text-align: left;
+    cursor: pointer;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.locale-selected:after {
+    content: '▼';
+    float: right;
+    margin-left: 10px;
+}
+
+/* Estilo del menú de opciones */
+.locale-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.locale-option {
+    font-size: 0.8rem;
+    width: 100%;
+    padding: 2px;
+    text-align: left;
+    background: white;
+    border: none;
+    color: #333;
+    cursor: pointer;
+}
+
+.locale-option:hover {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    color: white;
+}
