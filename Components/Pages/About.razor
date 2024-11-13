@@ -1,6 +1,28 @@
 @page "/about"
+@inject IStringLocalizer<BlazorAppPCInfo.About> Localizer
+@inject IStringLocalizer<Resources> LocResources
 
-<h3>About Us</h3>
-<p>
-    Esta es la página de información de mi sitio web.
-</p>
+<PageTitle>About</PageTitle>
+
+<div class="about-container">
+    <section class="team-section">
+        <h2>@Localizer["aboutUs"]</h2>
+        <p>
+            @Localizer["textAboutUs"]
+        </p>
+    </section>
+
+    <section class="team-section">
+        <h2>@Localizer["aboutTeam"]</h2>
+        <p>
+            @Localizer["textAboutTeam"]
+        </p>
+    </section>
+
+    <section class="mission-section">
+        <h2>@Localizer["aboutMission"]</h2>
+        <p>
+            @Localizer["textAboutMission"]
+        </p>
+    </section>
+</div>
