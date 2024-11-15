@@ -10,10 +10,16 @@ namespace INFOPC.Services
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly HttpClient _httpClient = new HttpClient();
         private static AuthToken token = null;
+        public static event Action<bool> OnLoadingChanged;
 
         public APIService(string uri)
         {
             _httpClient.BaseAddress = new  Uri(uri);
+        }
+
+        private static void ToggleLoading(bool isLoading)
+        {
+            OnLoadingChanged?.Invoke(isLoading);
         }
 
         // Obtener todos los ordenadores
@@ -21,7 +27,10 @@ namespace INFOPC.Services
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+                ToggleLoading(true);
+                List<Computer> result = await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+                ToggleLoading(false);
+                return result;
             }
             catch (HttpRequestException ex)
             {
@@ -38,15 +47,20 @@ namespace INFOPC.Services
         // Obtener un ordenador
         public static async Task<Computer> GetComputer(int id)
         {
-            return await _httpClient.GetFromJsonAsync<Computer>($"{_httpClient.BaseAddress}/Computers/{id}");
+            ToggleLoading(true);
+            Computer result = await _httpClient.GetFromJsonAsync<Computer>($"{_httpClient.BaseAddress}/Computers/{id}");
+            ToggleLoading(false);
+            return result;
         }
 
-        // Obtener todos los ordenadores
+        // Crear un ordenador
         public static async Task<Computer> PostComputers(Computer computer)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Computers", computer);
+                ToggleLoading(false);
                 var jsonString = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
@@ -67,15 +81,33 @@ namespace INFOPC.Services
         // Obtener todos los procesadores
         public static async Task<List<Processor>> GetProcessors()
         {
-            return await _httpClient.GetFromJsonAsync<List<Processor>>($"{_httpClient.BaseAddress}/Processors");
+            try
+            {
+                ToggleLoading(true);
+                List<Processor> result = await _httpClient.GetFromJsonAsync<List<Processor>>($"{_httpClient.BaseAddress}/Processors");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de procesadores.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetProcessors.");
+                throw;
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Crear procesador
         public static async Task<bool> PostProcessors(Processor processor)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Processors", processor);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -92,18 +124,36 @@ namespace INFOPC.Services
             return false;
         }
 
-        // Obtener todos los procesadores
+        // Obtener todas las marcas
         public static async Task<List<Brand>> GetBrands()
         {
-            return await _httpClient.GetFromJsonAsync<List<Brand>>($"{_httpClient.BaseAddress}/Brands");
+            try
+            {
+                ToggleLoading(true);
+                List<Brand> result = await _httpClient.GetFromJsonAsync<List<Brand>>($"{_httpClient.BaseAddress}/Brands");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de marcas.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetBrands.");
+                throw;
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Crear marca
         public static async Task<bool> PostBrands(Brand brand)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Brands", brand);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -120,18 +170,36 @@ namespace INFOPC.Services
             return false;
         }
 
-        // Obtener todos los procesadores
+        // Obtener todas las RAMs
         public static async Task<List<RAM>> GetRAMs()
         {
-            return await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
+            try
+            {
+                ToggleLoading(true);
+                List<RAM> result = await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de RAMs.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetRAMs.");
+                throw;
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Crear RAM
         public static async Task<bool> PostRAMs(RAM ram)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Rams", ram);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -148,18 +216,36 @@ namespace INFOPC.Services
             return false;
         }
 
-        // Obtener todos los procesadores
+        // Obtener todos los almacenamientos
         public static async Task<List<HardDrive>> GetStorages()
         {
-            return await _httpClient.GetFromJsonAsync<List<HardDrive>>($"{_httpClient.BaseAddress}/Storages");
+            try
+            {
+                ToggleLoading(true);
+                List<HardDrive> result = await _httpClient.GetFromJsonAsync<List<HardDrive>>($"{_httpClient.BaseAddress}/Storages");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de almacenamientos.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetStorages.");
+                throw;
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Crear almacenamiento
         public static async Task<bool> PostStorages(HardDrive hardDrive)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Storages", hardDrive);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -186,7 +272,10 @@ namespace INFOPC.Services
                 
                 try
                 {
+                    ToggleLoading(true);
                     var response = await _httpClient.SendAsync(request);
+                    ToggleLoading(false);
+
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();

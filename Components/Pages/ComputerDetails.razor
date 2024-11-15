@@ -7,6 +7,13 @@
     [Parameter] public int Id { get; set; }
     private Computer? computer;
 
+    private bool isAdvancedView = false;
+
+    private void ToggleView()
+    {
+        isAdvancedView = !isAdvancedView;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         // Realiza una solicitud a la API para obtener los detalles del ordenador por su Id.
@@ -14,27 +21,79 @@
     }
 }
 
+
 @if (computer != null)
 {
-    <div class="computer-details">
+    <div class="header-container">
         <h2>@computer.Name</h2>
-        <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
-
-        <ul class="list-group">
-            <li class="list-group-item">
-                <strong>@LocResources["processor"]:</strong> @computer.Processor
-            </li>
-            <li class="list-group-item">
-                <strong>@LocResources["ram"]:</strong> @computer.RAM GB
-            </li>
-            <li class="list-group-item">
-                <strong>@LocResources["memory"]:</strong> @computer.Storage GB
-            </li>
-            <li class="list-group-item">
-                <strong>@LocResources["price"]:</strong> $@computer.Price
-            </li>
-        </ul>
+        <button class="btn btn-primary toggle-view-button" @onclick="ToggleView">
+            @if (isAdvancedView)
+            {
+                <i class="bi bi-eye-slash"></i>
+            }
+            else
+            {
+                <i class="bi bi-eye"></i>
+            }
+        </button>
     </div>
+
+    @if (!isAdvancedView)
+    {
+        <!-- Vista simple -->
+        <div class="simple-view">
+            <div class="computer-details">
+                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>@LocResources["processor"]:</strong> @computer.Processor
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@LocResources["ram"]:</strong> @computer.RAM GB
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@LocResources["memory"]:</strong> @computer.Storage GB
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@LocResources["price"]:</strong> $@computer.Price
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Vista avanzada -->
+        <div class="advanced-view">
+            <div class="computer-details">
+                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>@LocResources["processor"]:</strong> @computer.Processor
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@LocResources["ram"]:</strong> @computer.RAM GB
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@LocResources["memory"]:</strong> @computer.Storage GB
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@LocResources["price"]:</strong> $@computer.Price
+                    </li>
+                </ul>
+            </div>
+            <h4>Detalles Avanzados</h4>
+            <ul>
+                @* @foreach (var detail in computer)
+                {
+                    <li>@detail</li>
+                } *@
+            </ul>
+        </div>
+    }
+
 }
 else
 {
