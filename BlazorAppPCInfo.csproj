@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <Version>1.0.0</Version>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -11,7 +12,7 @@
     <PackageReference Include="NLog" Version="5.3.4" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="UtilInfoPC" Version="1.0.0" />
+    <PackageReference Include="UtilInfoPC" Version="2.1.7" />
   </ItemGroup>
   <PropertyGroup>
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);$(MSBuildThisFileDirectory)UtilPCInfo</RestoreAdditionalProjectSources>

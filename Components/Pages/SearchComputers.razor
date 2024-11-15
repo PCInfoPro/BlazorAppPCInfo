@@ -19,7 +19,7 @@
                 <option value="">@Localizer["filterProcessor"]</option>
                 @foreach (var processor in processors)
                 {
-                    <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
+                    <option value="@processor.ProcessorID">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
                 }
             </select>
         </div>
@@ -28,7 +28,7 @@
                 <option value="">@Localizer["filterRAM"]</option>
                 @foreach (var ram in rams)
                 {
-                    <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
+                    <option value="@ram.RAMID">@ram.Frequency - @ram.Type - @ram.CapacityGB GB</option>
                 }
             </select>
         </div>
@@ -43,9 +43,9 @@
         <div class="computers-container">
             @foreach (var computer in filteredComputers)
             {
-                <a href="/computer/@computer.Id" class="computer-card">
+                <a href="/computer/@computer.ComputerID" class="computer-card">
                     <div class="image-wrapper">
-                        <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image" />
+                        <img src="@computer.Name" alt="Imagen de @computer.Name" class="computer-image" />
                     </div>
                     <h4>@computer.Name</h4>
                     <ul>
@@ -66,7 +66,7 @@
 
 @code {
     private List<int> storageOptions = new List<int>();
-    private List<Computer> computers = new List<Computer>();
+    private List<ComputersSimpleDetail> computers = new List<ComputersSimpleDetail>();
     private List<HardDrive> hardDrives = new List<HardDrive>();
     private List<Brand> brands = new List<Brand>();
     private List<Processor> processors = new List<Processor>();
@@ -96,7 +96,7 @@
                 await RefreshRAMs();
                 await RefreshProcessors();
                 await RefreshBrands();
-                computers = await APIService.GetComputers();
+                computers = await APIService.GetComputersSimpleDetails();
             }
             catch (Exception ex)
             {
@@ -111,7 +111,7 @@
 
 
     // Lógica de filtrado aplicada
-    private IEnumerable<Computer> filteredComputers => computers.Where(c =>
+    private IEnumerable<ComputersSimpleDetail> filteredComputers => computers.Where(c =>
         (string.IsNullOrWhiteSpace(searchTerm) || c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) &&
         (string.IsNullOrWhiteSpace(selectedProcessor) || c.Processor.Contains(selectedProcessor, StringComparison.OrdinalIgnoreCase)) &&
         (!selectedRAM.HasValue || c.RAM.Equals(selectedRAM)) &&

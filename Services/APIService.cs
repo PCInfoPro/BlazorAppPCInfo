@@ -262,6 +262,68 @@ namespace INFOPC.Services
             return false;
         }
 
+        // Obtener todos los ordenadores en formato visual
+        public static async Task<List<ComputersSimpleDetail>> GetComputersSimpleDetails()
+        {
+            try
+            {
+                ToggleLoading(true);
+                List<ComputersSimpleDetail> result = await _httpClient.GetFromJsonAsync<List<ComputersSimpleDetail>>($"{_httpClient.BaseAddress}/ComputersSimpleDetails");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de los ordenadores en formato visual.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetComputersSimpleDetails.");
+                throw;
+            }
+        }
+
+        // Obtener un ordenador en formato visual
+        public static async Task<ComputersSimpleDetail> GetComputersSimpleDetail(int id)
+        {
+            ToggleLoading(true);
+            ComputersSimpleDetail result = await _httpClient.GetFromJsonAsync<ComputersSimpleDetail>($"{_httpClient.BaseAddress}/ComputersSimpleDetails/{id}");
+            ToggleLoading(false);
+            return result;
+        }
+
+        // Obtener todos los ordenadores en formato visual
+        public static async Task<List<ComputerExtendDetail>> GetComputerExtendDetails()
+        {
+            try
+            {
+                ToggleLoading(true);
+                List<ComputerExtendDetail> result = await _httpClient.GetFromJsonAsync<List<ComputerExtendDetail>>($"{_httpClient.BaseAddress}/ComputerExtendDetails");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de los ordenadores en formato visual extendido.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetComputerExtendDetails.");
+                throw;
+            }
+        }
+
+        // Obtener un ordenador en formato visual extendido
+        public static async Task<ComputerExtendDetail> GetComputerExtendDetail(int id)
+        {
+            ToggleLoading(true);
+            ComputerExtendDetail result = await _httpClient.GetFromJsonAsync<ComputerExtendDetail>($"{_httpClient.BaseAddress}/ComputerExtendDetails/{id}");
+            ToggleLoading(false);
+            return result;
+        }
+
         // Método para hacer login y obtener el token JWT
         public static async Task<AuthToken> Login(LoginUser user)
         {

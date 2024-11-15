@@ -5,7 +5,7 @@
 
 @code {
     [Parameter] public int Id { get; set; }
-    private Computer? computer;
+    private ComputerExtendDetail? computer;
 
     private bool isAdvancedView = false;
 
@@ -17,7 +17,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Realiza una solicitud a la API para obtener los detalles del ordenador por su Id.
-        computer = await APIService.GetComputer(Id);
+        computer = await APIService.GetComputerExtendDetail(Id);
     }
 }
 
@@ -25,7 +25,7 @@
 @if (computer != null)
 {
     <div class="header-container">
-        <h2>@computer.Name</h2>
+        <h2>@computer.ComputerModel</h2>
         <button class="btn btn-primary toggle-view-button" @onclick="ToggleView">
             @if (isAdvancedView)
             {
@@ -43,17 +43,17 @@
         <!-- Vista simple -->
         <div class="simple-view">
             <div class="computer-details">
-                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+                <img src="@computer.ComputerModel" alt="Imagen de @computer.ComputerModel" class="computer-image mb-3"/>
 
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <strong>@LocResources["processor"]:</strong> @computer.Processor
+                        <strong>@LocResources["processor"]:</strong> @computer.ProcessorModel
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["ram"]:</strong> @computer.RAM GB
+                        <strong>@LocResources["ram"]:</strong> @computer.RAMCapacity GB
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["memory"]:</strong> @computer.Storage GB
+                        <strong>@LocResources["memory"]:</strong> @computer.StorageCapacity GB
                     </li>
                     <li class="list-group-item">
                         <strong>@LocResources["price"]:</strong> $@computer.Price
@@ -67,17 +67,17 @@
         <!-- Vista avanzada -->
         <div class="advanced-view">
             <div class="computer-details">
-                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+                <img src="@computer.ComputerModel" alt="Imagen de @computer.ComputerModel" class="computer-image mb-3"/>
 
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <strong>@LocResources["processor"]:</strong> @computer.Processor
+                        <strong>@LocResources["processor"]:</strong> @computer.ProcessorModel
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["ram"]:</strong> @computer.RAM GB
+                        <strong>@LocResources["ram"]:</strong> @computer.RAMCapacity GB
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["memory"]:</strong> @computer.Storage GB
+                        <strong>@LocResources["memory"]:</strong> @computer.StorageCapacity GB
                     </li>
                     <li class="list-group-item">
                         <strong>@LocResources["price"]:</strong> $@computer.Price
