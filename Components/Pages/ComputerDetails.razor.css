@@ -1,0 +1,23 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.toggle-view-button {
+    margin-left: auto;
+}
+
+.simple-view {
+    font-size: 1rem;
+    margin: 1rem 0;
+}
+
+.advanced-view {
+    font-size: 0.95rem;
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
