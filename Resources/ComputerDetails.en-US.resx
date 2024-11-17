@@ -121,4 +121,40 @@
     <value>Loading computer details...</value>
     <comment>None</comment>
   </data>
+  <data name="GraphicsCardType" xml:space="preserve">
+    <value>Graphic card type</value>
+    <comment>None</comment>
+  </data>
+  <data name="GraphicsCardMemory" xml:space="preserve">
+    <value>Memory</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageMemoryType" xml:space="preserve">
+    <value>Memory type</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageConnectionType" xml:space="preserve">
+    <value>Connection type</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageProtocol" xml:space="preserve">
+    <value>Protocol</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageInterface" xml:space="preserve">
+    <value>Connection interface</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageType" xml:space="preserve">
+    <value>Type</value>
+    <comment>None</comment>
+  </data>
+  <data name="RAMType" xml:space="preserve">
+    <value>Type</value>
+    <comment>None</comment>
+  </data>
+  <data name="ProcessorCores" xml:space="preserve">
+    <value>Cores</value>
+    <comment>None</comment>
+  </data>
 </root>

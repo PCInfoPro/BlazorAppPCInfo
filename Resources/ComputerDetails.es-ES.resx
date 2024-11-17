@@ -121,4 +121,40 @@
     <value>Cargando detalles del ordenador...</value>
     <comment>None</comment>
   </data>
+  <data name="GraphicsCardType" xml:space="preserve">
+    <value>Tipo de tarjeta gráfica</value>
+    <comment>None</comment>
+  </data>
+  <data name="GraphicsCardMemory" xml:space="preserve">
+    <value>Memoria</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageMemoryType" xml:space="preserve">
+    <value>Tipo de memoria</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageConnectionType" xml:space="preserve">
+    <value>Tipo de conexión</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageProtocol" xml:space="preserve">
+    <value>Protocolo</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageInterface" xml:space="preserve">
+    <value>Interfaz de conexión</value>
+    <comment>None</comment>
+  </data>
+  <data name="StorageType" xml:space="preserve">
+    <value>Tipo</value>
+    <comment>None</comment>
+  </data>
+  <data name="RAMType" xml:space="preserve">
+    <value>Tipo</value>
+    <comment>None</comment>
+  </data>
+  <data name="ProcessorCores" xml:space="preserve">
+    <value>Núcleos</value>
+    <comment>None</comment>
+  </data>
 </root>

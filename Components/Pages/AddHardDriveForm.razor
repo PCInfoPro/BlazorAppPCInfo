@@ -10,11 +10,66 @@
 
         <div class="form-group mb-3">
             <label for="Brand" class="form-label">Marca</label>
-            <select id="Brand" class="form-select" @bind="newHardDrive.Brand">
+            <select id="Brand" class="form-select" @bind="newHardDrive.BrandID">
                 <option value="">Seleccione una marca</option>
                 @foreach (var brand in brands)
                 {
-                    <option value="@brand.Id">@brand.Name</option>
+                    <option value="@brand.BrandID">@brand.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="MemoryTypeID" class="form-label">Tipo de la memoria</label>
+            <select id="MemoryTypeID" class="form-select" @bind="newHardDrive.MemoryTypeID">
+                <option value="">Seleccione un tipo de la memoria</option>
+                @foreach (var memoryType in memoryTypes)
+                {
+                    <option value="@memoryType.MemoryTypeID">@memoryType.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="ConnectionTypeID" class="form-label">Tipo conexión de la memoria</label>
+            <select id="ConnectionTypeID" class="form-select" @bind="newHardDrive.ConnectionTypeID">
+                <option value="">Seleccione un tipo de conexión de la memoria</option>
+                @foreach (var connectionType in connectionTypes)
+                {
+                    <option value="@connectionType.ConnectionTypeID">@connectionType.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="ProtocolID" class="form-label">Protocolo de la memoria</label>
+            <select id="ProtocolID" class="form-select" @bind="newHardDrive.ProtocolID">
+                <option value="">Seleccione el Protocolo</option>
+                @foreach (var protocol in protocols)
+                {
+                    <option value="@protocol.ProtocolID">@protocol.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="InterfaceID" class="form-label">Interfaz de la memoria</label>
+            <select id="InterfaceID" class="form-select" @bind="newHardDrive.InterfaceID">
+                <option value="">Seleccione el interfaz</option>
+                @foreach (var storageInterface in interfaces)
+                {
+                    <option value="@storageInterface.InterfaceID">@storageInterface.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="StorageTypeID" class="form-label">Tipo de almacenamiento</label>
+            <select id="StorageTypeID" class="form-select" @bind="newHardDrive.StorageTypeID">
+                <option value="">Seleccione el tipo</option>
+                @foreach (var storageType in storageTypes)
+                {
+                    <option value="@storageType.StorageTypeID">@storageType.Name</option>
                 }
             </select>
         </div>
@@ -43,13 +98,32 @@
     [Parameter]
     public EventCallback OnHardDriveAdded { get; set; }
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private HardDrive newHardDrive = new HardDrive();
+    private Storage newHardDrive = new Storage();
     private List<Brand> brands = new List<Brand>();
+    private List<StorageType> storageTypes = new List<StorageType>();
+    private List<Interface> interfaces = new List<Interface>();
+    private List<Protocol> protocols = new List<Protocol>();
+    private List<ConnectionType> connectionTypes = new List<ConnectionType>();
+    private List<MemoryType> memoryTypes = new List<MemoryType>();
 
     protected override async Task OnInitializedAsync()
     {
-        brands = await APIService.GetBrands();
+        try
+        {
+            brands = await APIService.GetBrands() ?? new List<Brand>();
+            storageTypes = await APIService.GetStorageTypes() ?? new List<StorageType>();
+            interfaces = await APIService.GetInterfaces() ?? new List<Interface>();
+            protocols = await APIService.GetProtocols() ?? new List<Protocol>();
+            connectionTypes = await APIService.GetConnectionTypes() ?? new List<ConnectionType>();
+            memoryTypes = await APIService.GetMemoryTypes() ?? new List<MemoryType>();
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error al cargar datos para el formulario.");
+            // Opcional: mostrar un mensaje de error al usuario
+        }
     }
+    
     private async Task HandleValidSubmit()
     {
         if (await APIService.PostStorages(newHardDrive))

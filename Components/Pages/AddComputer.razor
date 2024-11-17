@@ -23,7 +23,7 @@
                 <!-- Nombre del ordenador -->
                 <div class="mb-3">
                     <label for="Name" class="form-label">@Localizer["pcmodel"]</label>
-                    <InputText id="Name" class="form-control" placeholder="@Localizer["pcname"]" @bind-Value="newComputer.Name" />
+                    <InputText id="Name" class="form-control" placeholder="@Localizer["pcname"]" @bind-Value="newComputer.Model" />
                 </div>
 
                 <!-- Marca -->
@@ -31,11 +31,11 @@
                     <label for="Brand" class="form-label">@LocResources["brand"]</label>
                     <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
-                        <select id="Brand" class="form-select" @bind="newComputer.Brand">
+                        <select id="Brand" class="form-select" @bind="newComputer.BrandID">
                             <option value="">@Localizer["brandchoose"]</option>
                             @foreach (var brand in brands)
                             {
-                                <option value="@brand.Id">@brand.Name</option>
+                                <option value="@brand.BrandID">@brand.Name</option>
                             }
                         </select>
                     </div>
@@ -46,11 +46,11 @@
                     <label for="Processor" class="form-label">@LocResources["processor"]</label>
                     <button type="button" class="btn btn-link" @onclick="OpenAddProcessorModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
-                        <select id="Processor" class="form-select" @bind="newComputer.Processor">
+                        <select id="Processor" class="form-select" @bind="newComputer.ProcessorID">
                             <option value="">@Localizer["processorchoose"]</option>
                             @foreach (var processor in processors)
                             {
-                                <option value="@processor.Id">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
+                                <option value="@processor.ProcessorID">@processor.Brand - @processor.Model - @processor.Frequency MHz</option>
                             }
                         </select>
                     </div>
@@ -61,11 +61,11 @@
                     <label for="RAM" class="form-label">@LocResources["ram"] (GB)</label>
                     <button type="button" class="btn btn-link" @onclick="OpenAddRAMModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
-                        <select id="RAM" class="form-select" @bind="newComputer.RAM">
+                        <select id="RAM" class="form-select" @bind="newComputer.RAMID">
                             <option value="">@Localizer["ramchoose"]</option>
                             @foreach (var ram in rams)
                             {
-                                <option value="@ram.Id">@ram.Brand - @ram.Name - @ram.CapacityGB GB</option>
+                                <option value="@ram.RAMID">@ram.Type - @ram.Frequency - @ram.CapacityGB GB</option>
                             }
                         </select>
                     </div>
@@ -77,16 +77,16 @@
                     <button type="button" class="btn btn-link" @onclick="OpenAddHardDriveModal"><i class="bi bi-plus"></i></button>
                     <!-- Seleccionar si usar almacenamiento personalizado o existente -->
                     <div class="form-check">
-                        <InputCheckbox id="UseCustomStorage" class="form-check-input" @bind-Value="newComputer.UseCustomStorage" />
+                        <InputCheckbox id="UseCustomStorage" class="form-check-input" @bind-Value="UseCustomStorage" />
                         <label for="UseCustomStorage" class="form-check-label">@Localizer["choosecustomizestorage"]</label>
                     </div>
 
-                    @if (newComputer.UseCustomStorage)
+                    @if (UseCustomStorage)
                     {
                         <!-- Almacenamiento personalizado (manual) -->
                         <div class="mt-2">
                             <label for="StorageGB" class="form-label">@LocResources["memory"] (GB)</label>
-                            <select id="StorageGB" class="form-select" @bind="newComputer.CustomStorageGB">
+                            <select id="StorageGB" class="form-select" @bind="newComputer.StorageGB">
                                 <option value="">@Localizer["storagechoose"]</option>
                                 @foreach (var storage in storageOptions)
                                 {
@@ -101,11 +101,11 @@
                         <div class="mt-2">
                             <label for="SelectedStorage" class="form-label">@Localizer["systemstorage"]</label>
                             <div class="mt-2 d-flex align-items-center">
-                                <select id="SelectedStorage" class="form-select" @bind="newComputer.SelectedStorageId">
+                                <select id="SelectedStorage" class="form-select" @bind="newComputer.StorageID">
                                     <option value="">@Localizer["sddoptions"]</option>
                                     @foreach (var drive in hardDrives)
                                     {
-                                        <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
+                                        <option value="@drive.StorageID">@drive.Model - @drive.CapacityGB GB</option>
                                     }
                                 </select>
                             </div>
@@ -122,7 +122,7 @@
                 <!-- URL de la imagen -->
                 <div class="mb-3">
                     <label for="ImageUrl" class="form-label">@Localizer["urlimage"]</label>
-                    <InputText id="ImageUrl" class="form-control" placeholder="@Localizer["placeholderurl"]" @bind-Value="newComputer.ImageUrl" />
+                    <InputText id="ImageUrl" class="form-control" placeholder="@Localizer["placeholderurl"]" @bind-Value="newComputer.Model" />
                 </div>
 
                 <!-- Botón para guardar -->
@@ -139,12 +139,14 @@
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private Computer newComputer = new Computer();
     private List<int> storageOptions = new List<int>();
-    private List<HardDrive> hardDrives = new List<HardDrive>();
+    private List<Storage> hardDrives = new List<Storage>();
     private List<Brand> brands = new List<Brand>();
     private List<Processor> processors = new List<Processor>();
     private List<RAM> rams = new List<RAM>();
     private AuthToken token2;
     private string errorMessage;
+
+    bool UseCustomStorage = false;
     private LoginUser user = new LoginUser 
     {
         Username = "admin",
@@ -176,23 +178,23 @@
     private async Task HandleValidSubmit()
     {
         // Almacenar el valor correcto según la elección del almacenamiento
-        if (newComputer.UseCustomStorage && newComputer.CustomStorageGB.HasValue)
+        if (UseCustomStorage && newComputer.StorageGB.HasValue)
         {
-            newComputer.Storage = newComputer.CustomStorageGB.Value;
+            newComputer.StorageGB = newComputer.StorageGB.Value;
         }
-        else if (!newComputer.UseCustomStorage && newComputer.SelectedStorageId.HasValue)
+        else if (!UseCustomStorage && newComputer.StorageID.HasValue)
         {
-            var selectedDrive = hardDrives.FirstOrDefault(d => d.Id == newComputer.SelectedStorageId.Value);
+            var selectedDrive = hardDrives.FirstOrDefault(d => d.StorageID == newComputer.StorageID.Value);
             if (selectedDrive != null)
             {
-                newComputer.Storage = selectedDrive.CapacityGB;
+                newComputer.StorageID = selectedDrive.StorageID;
             }
         }
 
         var response = await APIService.PostComputers(newComputer);
         if (response != null)
         {
-            Navigation.NavigateTo($"/computer/{response.Id}");
+            Navigation.NavigateTo($"/computer/{response.ComputerID}");
         }
         else
         {

@@ -5,7 +5,7 @@
 
 @code {
     [Parameter] public int Id { get; set; }
-    private Computer? computer;
+    private ComputerExtendDetail? computer;
 
     private bool isAdvancedView = false;
 
@@ -17,7 +17,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Realiza una solicitud a la API para obtener los detalles del ordenador por su Id.
-        computer = await APIService.GetComputer(Id);
+        computer = await APIService.GetComputerExtendDetail(Id);
     }
 }
 
@@ -25,7 +25,7 @@
 @if (computer != null)
 {
     <div class="header-container">
-        <h2>@computer.Name</h2>
+        <h2>@computer.ComputerModel</h2>
         <button class="btn btn-primary toggle-view-button" @onclick="ToggleView">
             @if (isAdvancedView)
             {
@@ -43,20 +43,23 @@
         <!-- Vista simple -->
         <div class="simple-view">
             <div class="computer-details">
-                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+                <img src="@computer.ComputerModel" alt="Imagen de @computer.ComputerModel" class="computer-image mb-3"/>
 
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <strong>@LocResources["processor"]:</strong> @computer.Processor
+                        <i class="bi bi-cpu"></i> <strong>@LocResources["processor"]:</strong> @computer.ProcessorModel
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["ram"]:</strong> @computer.RAM GB
+                        <i class="bi bi-memory"></i> <strong>@LocResources["ram"]:</strong> @computer.RAMCapacity GB
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["memory"]:</strong> @computer.Storage GB
+                        <i class="bi bi-hdd"></i> <strong>@LocResources["memory"]:</strong> @computer.StorageCapacity GB
                     </li>
                     <li class="list-group-item">
-                        <strong>@LocResources["price"]:</strong> $@computer.Price
+                        <i class="bi bi-gpu-card"></i> <strong>@LocResources["GraphicsCardModel"]:</strong> @computer.GraphicsCardModel
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-currency-dollar"></i> <strong>@LocResources["price"]:</strong> @computer.Price @LocResources["$"]
                     </li>
                 </ul>
             </div>
@@ -67,33 +70,86 @@
         <!-- Vista avanzada -->
         <div class="advanced-view">
             <div class="computer-details">
-                <img src="@computer.ImageUrl" alt="Imagen de @computer.Name" class="computer-image mb-3"/>
+                <img src="@computer.ComputerModel" alt="Imagen de @computer.ComputerModel" class="computer-image mb-3" />
 
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <strong>@LocResources["processor"]:</strong> @computer.Processor
+                        <i class="bi bi-building"></i> <strong>@LocResources["brand"]:</strong> @computer.Brand
                     </li>
+
                     <li class="list-group-item">
-                        <strong>@LocResources["ram"]:</strong> @computer.RAM GB
+                        <ul class="list-group">
+                            <strong>@LocResources["processor"]:</strong>
+                            <li class="list-group-item">
+                                <i class="bi bi-cpu"></i> <strong>@LocResources["model"]:</strong> @computer.ProcessorModel
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-speedometer2"></i> <strong>@Localizer["ProcessorFrequency"]:</strong> @computer.ProcessorFrequency
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-grid-3x3-gap"></i> <strong>@Localizer["ProcessorCores"]:</strong> @computer.ProcessorCores
+                            </li>
+                        </ul>
                     </li>
+
                     <li class="list-group-item">
-                        <strong>@LocResources["memory"]:</strong> @computer.Storage GB
+                        <ul class="list-group">
+                            <strong>@LocResources["ram"]:</strong>
+                            <li class="list-group-item">
+                                <i class="bi bi-memory"></i> <strong>@LocResources["ram"]:</strong> @computer.RAMCapacity GB
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-layers"></i> <strong>@Localizer["RAMType"]:</strong> @computer.RAMType
+                            </li>
+                        </ul>
                     </li>
+
                     <li class="list-group-item">
-                        <strong>@LocResources["price"]:</strong> $@computer.Price
+                        <ul class="list-group">
+                            <strong>@LocResources["memory"]:</strong>
+                            <li class="list-group-item">
+                                <i class="bi bi-hdd"></i> <strong>@LocResources["memory"]:</strong> @computer.StorageCapacity GB
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-disc"></i> <strong>@Localizer["StorageType"]:</strong> @computer.StorageType
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-usb-plug"></i> <strong>@Localizer["StorageInterface"]:</strong> @computer.StorageInterface
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-diagram-2"></i> <strong>@Localizer["StorageProtocol"]:</strong> @computer.StorageProtocol
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-plug"></i> <strong>@Localizer["StorageConnectionType"]:</strong> @computer.StorageConnectionType
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-box"></i> <strong>@Localizer["StorageMemoryType"]:</strong> @computer.StorageMemoryType
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="list-group-item">
+                        <ul class="list-group">
+                            <strong>@LocResources["GraphicsCardModel"]:</strong>
+                            <li class="list-group-item">
+                                <i class="bi bi-gpu-card"></i> <strong>@LocResources["model"]:</strong> @computer.GraphicsCardModel
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-card-text"></i> <strong>@Localizer["GraphicsCardMemory"]:</strong> @computer.GraphicsCardMemory
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-diagram-3"></i> <strong>@Localizer["GraphicsCardType"]:</strong> @computer.GraphicsCardType
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="list-group-item">
+                        <i class="bi bi-currency-dollar"></i> <strong>@LocResources["price"]:</strong> @computer.Price @LocResources["$"]
                     </li>
                 </ul>
             </div>
-            <h4>Detalles Avanzados</h4>
-            <ul>
-                @* @foreach (var detail in computer)
-                {
-                    <li>@detail</li>
-                } *@
-            </ul>
         </div>
     }
-
 }
 else
 {

@@ -21,3 +21,17 @@
     border-radius: 8px;
     margin-top: 1rem;
 }
+
+.advanced-view .list-group-item {
+    border: none;
+}
+
+.advanced-view ul.list-group {
+    margin-bottom: 1rem;
+}
+
+.advanced-view .list-group-item > ul {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem; /* Indentar sublistas */
+}
+
