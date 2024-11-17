@@ -146,7 +146,7 @@
     <comment>None</comment>
   </data>
   <data name="loadError" xml:space="preserve">
-    <value>Error en carga de datos: </value>
+    <value>Load data fail:</value>
     <comment>None</comment>
   </data>
   <data name="brand" xml:space="preserve">
@@ -155,6 +155,18 @@
   </data>
   <data name="computer" xml:space="preserve">
     <value>Computer</value>
+    <comment>None</comment>
+  </data>
+  <data name="GraphicsCardModel" xml:space="preserve">
+    <value>Graphic card</value>
+    <comment>None</comment>
+  </data>
+  <data name="$" xml:space="preserve">
+    <value>$</value>
+    <comment>None</comment>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>Model</value>
     <comment>None</comment>
   </data>
 </root>

@@ -4,17 +4,17 @@
         <ValidationSummary class="text-danger" />
 
         <div class="form-group mb-3">
-            <label for="ProcessorName" class="form-label">Nombre del Procesador</label>
+            <label for="ProcessorName" class="form-label">Modelo del Procesador</label>
             <InputText id="ProcessorName" class="form-control" @bind-Value="newProcessor.Model" placeholder="Ejemplo: Intel Core i7" />
         </div>
 
         <div class="form-group mb-3">
             <label for="Brand" class="form-label">Marca</label>
-            <select id="Brand" class="form-select" @bind="newProcessor.Brand">
+            <select id="Brand" class="form-select" @bind="newProcessor.BrandID">
                 <option value="">Seleccione una marca</option>
                 @foreach (var brand in brands)
                 {
-                    <option value="@brand.Id">@brand.Name</option>
+                    <option value="@brand.BrandID">@brand.Name</option>
                 }
             </select>
         </div>
@@ -32,11 +32,11 @@
         <div class="form-group mb-3">
             <label for="Frequency" class="form-label">Frecuencia</label>
             <select id="Frequency" class="form-select" @bind="newProcessor.Frequency">
-                <option value="800">800 MHz</option>
-                <option value="1600">1600 MHz</option>
-                <option value="3200">3200 MHz</option>
-                <option value="5000">5000 MHz</option>
-                <option value="6000">6000 MHz</option>
+                <option value="3.0">3 GHz</option>
+                <option value="3.5">3.5 GHz</option>
+                <option value="4">4 GHz</option>
+                <option value="4.5">4.5 GHz</option>
+                <option value="5">5 GHz</option>
             </select>
         </div>
 

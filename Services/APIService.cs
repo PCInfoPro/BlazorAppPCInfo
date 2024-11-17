@@ -10,10 +10,16 @@ namespace INFOPC.Services
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static readonly HttpClient _httpClient = new HttpClient();
         private static AuthToken token = null;
+        public static event Action<bool> OnLoadingChanged;
 
         public APIService(string uri)
         {
             _httpClient.BaseAddress = new  Uri(uri);
+        }
+
+        private static void ToggleLoading(bool isLoading)
+        {
+            OnLoadingChanged?.Invoke(isLoading);
         }
 
         // Obtener todos los ordenadores
@@ -21,7 +27,10 @@ namespace INFOPC.Services
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+                ToggleLoading(true);
+                List<Computer> result = await _httpClient.GetFromJsonAsync<List<Computer>>($"{_httpClient.BaseAddress}/Computers");
+                ToggleLoading(false);
+                return result;
             }
             catch (HttpRequestException ex)
             {
@@ -38,15 +47,20 @@ namespace INFOPC.Services
         // Obtener un ordenador
         public static async Task<Computer> GetComputer(int id)
         {
-            return await _httpClient.GetFromJsonAsync<Computer>($"{_httpClient.BaseAddress}/Computers/{id}");
+            ToggleLoading(true);
+            Computer result = await _httpClient.GetFromJsonAsync<Computer>($"{_httpClient.BaseAddress}/Computers/{id}");
+            ToggleLoading(false);
+            return result;
         }
 
-        // Obtener todos los ordenadores
+        // Crear un ordenador
         public static async Task<Computer> PostComputers(Computer computer)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Computers", computer);
+                ToggleLoading(false);
                 var jsonString = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
@@ -67,15 +81,33 @@ namespace INFOPC.Services
         // Obtener todos los procesadores
         public static async Task<List<Processor>> GetProcessors()
         {
-            return await _httpClient.GetFromJsonAsync<List<Processor>>($"{_httpClient.BaseAddress}/Processors");
+            try
+            {
+                ToggleLoading(true);
+                List<Processor> result = await _httpClient.GetFromJsonAsync<List<Processor>>($"{_httpClient.BaseAddress}/Processors");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de procesadores.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetProcessors.");
+                throw;
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Crear procesador
         public static async Task<bool> PostProcessors(Processor processor)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Processors", processor);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -92,18 +124,36 @@ namespace INFOPC.Services
             return false;
         }
 
-        // Obtener todos los procesadores
+        // Obtener todas las marcas
         public static async Task<List<Brand>> GetBrands()
         {
-            return await _httpClient.GetFromJsonAsync<List<Brand>>($"{_httpClient.BaseAddress}/Brands");
+            try
+            {
+                ToggleLoading(true);
+                List<Brand> result = await _httpClient.GetFromJsonAsync<List<Brand>>($"{_httpClient.BaseAddress}/Brands");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de marcas.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetBrands.");
+                throw;
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Crear marca
         public static async Task<bool> PostBrands(Brand brand)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Brands", brand);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -120,18 +170,158 @@ namespace INFOPC.Services
             return false;
         }
 
-        // Obtener todos los procesadores
-        public static async Task<List<RAM>> GetRAMs()
+        // Obtener todas los StorageTypes
+        public static async Task<List<StorageType>> GetStorageTypes()
         {
-            return await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<StorageType>>($"{_httpClient.BaseAddress}/StorageTypes");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de StorageTypes.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetStorageTypes.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
         }
 
-        // Obtener todos los ordenadores
+        // Obtener todas los MemoryTypes
+        public static async Task<List<MemoryType>> GetMemoryTypes()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<MemoryType>>($"{_httpClient.BaseAddress}/MemoryTypes");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de MemoryTypes.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetMemoryTypes.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas los ConnectionTypes
+        public static async Task<List<ConnectionType>> GetConnectionTypes()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<ConnectionType>>($"{_httpClient.BaseAddress}/ConnectionTypes");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de ConnectionTypes.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetConnectionTypes.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas los Protocols
+        public static async Task<List<Protocol>> GetProtocols()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<Protocol>>($"{_httpClient.BaseAddress}/Protocols");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de Protocols.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de Protocols.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas las Interfaces
+        public static async Task<List<Interface>> GetInterfaces()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<Interface>>($"{_httpClient.BaseAddress}/Interfaces");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de Interfaces.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetInterfaces.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas las RAMs
+        public static async Task<List<RAM>> GetRAMs()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de RAMs.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetRAMs.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Crear RAM
         public static async Task<bool> PostRAMs(RAM ram)
         {
             try
             {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Rams", ram);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -148,18 +338,36 @@ namespace INFOPC.Services
             return false;
         }
 
-        // Obtener todos los procesadores
-        public static async Task<List<HardDrive>> GetStorages()
-        {
-            return await _httpClient.GetFromJsonAsync<List<HardDrive>>($"{_httpClient.BaseAddress}/Storages");
-        }
-
-        // Obtener todos los ordenadores
-        public static async Task<bool> PostStorages(HardDrive hardDrive)
+        // Obtener todos los almacenamientos
+        public static async Task<List<Storage>> GetStorages()
         {
             try
             {
+                ToggleLoading(true);
+                List<Storage> result = await _httpClient.GetFromJsonAsync<List<Storage>>($"{_httpClient.BaseAddress}/Storages");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de almacenamientos.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetStorages.");
+                throw;
+            }
+        }
+
+        // Crear almacenamiento
+        public static async Task<bool> PostStorages(Storage hardDrive)
+        {
+            try
+            {
+                ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Storages", hardDrive);
+                ToggleLoading(false);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -176,6 +384,70 @@ namespace INFOPC.Services
             return false;
         }
 
+        // Obtener todos los ordenadores en formato visual
+        public static async Task<List<ComputersSimpleDetail>> GetComputersSimpleDetails()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<ComputersSimpleDetail>>($"{_httpClient.BaseAddress}/ComputersSimpleDetails");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de los ordenadores en formato visual.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetComputersSimpleDetails.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener un ordenador en formato visual
+        public static async Task<ComputersSimpleDetail> GetComputersSimpleDetail(int id)
+        {
+            ToggleLoading(true);
+            ComputersSimpleDetail result = await _httpClient.GetFromJsonAsync<ComputersSimpleDetail>($"{_httpClient.BaseAddress}/ComputersSimpleDetails/{id}");
+            ToggleLoading(false);
+            return result;
+        }
+
+        // Obtener todos los ordenadores en formato visual
+        public static async Task<List<ComputerExtendDetail>> GetComputerExtendDetails()
+        {
+            try
+            {
+                ToggleLoading(true);
+                List<ComputerExtendDetail> result = await _httpClient.GetFromJsonAsync<List<ComputerExtendDetail>>($"{_httpClient.BaseAddress}/ComputerExtendDetails");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de los ordenadores en formato visual extendido.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetComputerExtendDetails.");
+                throw;
+            }
+        }
+
+        // Obtener un ordenador en formato visual extendido
+        public static async Task<ComputerExtendDetail> GetComputerExtendDetail(int id)
+        {
+            ToggleLoading(true);
+            ComputerExtendDetail result = await _httpClient.GetFromJsonAsync<ComputerExtendDetail>($"{_httpClient.BaseAddress}/ComputerExtendDetails/{id}");
+            ToggleLoading(false);
+            return result;
+        }
+
         // Método para hacer login y obtener el token JWT
         public static async Task<AuthToken> Login(LoginUser user)
         {
@@ -186,7 +458,10 @@ namespace INFOPC.Services
                 
                 try
                 {
+                    ToggleLoading(true);
                     var response = await _httpClient.SendAsync(request);
+                    ToggleLoading(false);
+
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
