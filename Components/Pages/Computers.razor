@@ -20,9 +20,11 @@
             </div>
             <h4>@computer.Name</h4>
             <ul>
+                <li><i class="bi bi-building"></i> @LocResources["brand"]: @computer.Brand</li>
                 <li><i class="bi bi-cpu"></i> @LocResources["processor"]: @computer.Processor</li>
                 <li><i class="bi bi-memory"></i> @LocResources["ram"]: @computer.RAM</li>
                 <li><i class="bi bi-hdd"></i> @LocResources["memory"]: @computer.Storage</li>
+                <li><i class="bi bi-gpu-card"></i> @LocResources["GraphicsCardModel"]: @computer.GraphicCard</li>
                 <li><i class="bi bi-currency-dollar"></i> @LocResources["price"]: $@computer.Price</li>
             </ul>
         </a>

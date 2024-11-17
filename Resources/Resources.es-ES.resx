@@ -157,4 +157,16 @@
     <value>Ordenador</value>
     <comment>None</comment>
   </data>
+  <data name="GraphicsCardModel" xml:space="preserve">
+    <value>Tarjeta gráfica</value>
+    <comment>None</comment>
+  </data>
+  <data name="$" xml:space="preserve">
+    <value>€</value>
+    <comment>None</comment>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>Modelo</value>
+    <comment>None</comment>
+  </data>
 </root>
