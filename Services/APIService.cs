@@ -170,15 +170,133 @@ namespace INFOPC.Services
             return false;
         }
 
+        // Obtener todas los StorageTypes
+        public static async Task<List<StorageType>> GetStorageTypes()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<StorageType>>($"{_httpClient.BaseAddress}/StorageTypes");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de StorageTypes.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetStorageTypes.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas los MemoryTypes
+        public static async Task<List<MemoryType>> GetMemoryTypes()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<MemoryType>>($"{_httpClient.BaseAddress}/MemoryTypes");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de MemoryTypes.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetMemoryTypes.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas los ConnectionTypes
+        public static async Task<List<ConnectionType>> GetConnectionTypes()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<ConnectionType>>($"{_httpClient.BaseAddress}/ConnectionTypes");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de ConnectionTypes.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetConnectionTypes.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas los Protocols
+        public static async Task<List<Protocol>> GetProtocols()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<Protocol>>($"{_httpClient.BaseAddress}/Protocols");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de Protocols.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de Protocols.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
+        // Obtener todas las Interfaces
+        public static async Task<List<Interface>> GetInterfaces()
+        {
+            try
+            {
+                ToggleLoading(true);
+                return await _httpClient.GetFromJsonAsync<List<Interface>>($"{_httpClient.BaseAddress}/Interfaces");
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de Interfaces.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetInterfaces.");
+                throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
+            }
+        }
+
         // Obtener todas las RAMs
         public static async Task<List<RAM>> GetRAMs()
         {
             try
             {
                 ToggleLoading(true);
-                List<RAM> result = await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
-                ToggleLoading(false);
-                return result;
+                return await _httpClient.GetFromJsonAsync<List<RAM>>($"{_httpClient.BaseAddress}/Rams");
             }
             catch (HttpRequestException ex)
             {
@@ -189,6 +307,10 @@ namespace INFOPC.Services
             {
                 logger.Error(ex, "Error inesperado en la solicitud de GetRAMs.");
                 throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
             }
         }
 
@@ -217,12 +339,12 @@ namespace INFOPC.Services
         }
 
         // Obtener todos los almacenamientos
-        public static async Task<List<HardDrive>> GetStorages()
+        public static async Task<List<Storage>> GetStorages()
         {
             try
             {
                 ToggleLoading(true);
-                List<HardDrive> result = await _httpClient.GetFromJsonAsync<List<HardDrive>>($"{_httpClient.BaseAddress}/Storages");
+                List<Storage> result = await _httpClient.GetFromJsonAsync<List<Storage>>($"{_httpClient.BaseAddress}/Storages");
                 ToggleLoading(false);
                 return result;
             }
@@ -239,7 +361,7 @@ namespace INFOPC.Services
         }
 
         // Crear almacenamiento
-        public static async Task<bool> PostStorages(HardDrive hardDrive)
+        public static async Task<bool> PostStorages(Storage hardDrive)
         {
             try
             {
@@ -268,9 +390,7 @@ namespace INFOPC.Services
             try
             {
                 ToggleLoading(true);
-                List<ComputersSimpleDetail> result = await _httpClient.GetFromJsonAsync<List<ComputersSimpleDetail>>($"{_httpClient.BaseAddress}/ComputersSimpleDetails");
-                ToggleLoading(false);
-                return result;
+                return await _httpClient.GetFromJsonAsync<List<ComputersSimpleDetail>>($"{_httpClient.BaseAddress}/ComputersSimpleDetails");
             }
             catch (HttpRequestException ex)
             {
@@ -281,6 +401,10 @@ namespace INFOPC.Services
             {
                 logger.Error(ex, "Error inesperado en la solicitud de GetComputersSimpleDetails.");
                 throw;
+            }
+            finally
+            {
+                ToggleLoading(false);
             }
         }
 

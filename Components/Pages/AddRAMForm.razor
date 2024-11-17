@@ -9,16 +9,16 @@
             <InputText id="RamName" class="form-control" @bind-Value="newRAM.Name" placeholder="Ejemplo: Corsair Vengeance LPX" />
         </div> *@
 
-        @* <div class="form-group mb-3">
+        <div class="form-group mb-3">
             <label for="Brand" class="form-label">Marca</label>
-            <select id="Brand" class="form-select" @bind="newRAM.Brand">
+            <select id="Brand" class="form-select" @bind="newRAM.RAMID">
                 <option value="">Seleccione una marca</option>
                 @foreach (var brand in brands)
                 {
                     <option value="@brand.BrandID">@brand.Name</option>
                 }
             </select>
-        </div> *@
+        </div>
 
         <div class="form-group mb-3">
             <label for="Type" class="form-label">Tipo de RAM</label>

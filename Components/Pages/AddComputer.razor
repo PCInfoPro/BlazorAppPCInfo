@@ -31,7 +31,7 @@
                     <label for="Brand" class="form-label">@LocResources["brand"]</label>
                     <button type="button" class="btn btn-link" @onclick="OpenAddBrandModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
-                        <select id="Brand" class="form-select" @bind="newComputer.Brand">
+                        <select id="Brand" class="form-select" @bind="newComputer.BrandID">
                             <option value="">@Localizer["brandchoose"]</option>
                             @foreach (var brand in brands)
                             {
@@ -46,7 +46,7 @@
                     <label for="Processor" class="form-label">@LocResources["processor"]</label>
                     <button type="button" class="btn btn-link" @onclick="OpenAddProcessorModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
-                        <select id="Processor" class="form-select" @bind="newComputer.Processor">
+                        <select id="Processor" class="form-select" @bind="newComputer.ProcessorID">
                             <option value="">@Localizer["processorchoose"]</option>
                             @foreach (var processor in processors)
                             {
@@ -61,7 +61,7 @@
                     <label for="RAM" class="form-label">@LocResources["ram"] (GB)</label>
                     <button type="button" class="btn btn-link" @onclick="OpenAddRAMModal"><i class="bi bi-plus"></i></button>
                     <div class="mt-2 d-flex align-items-center">
-                        <select id="RAM" class="form-select" @bind="newComputer.RAM">
+                        <select id="RAM" class="form-select" @bind="newComputer.RAMID">
                             <option value="">@Localizer["ramchoose"]</option>
                             @foreach (var ram in rams)
                             {
@@ -105,7 +105,7 @@
                                     <option value="">@Localizer["sddoptions"]</option>
                                     @foreach (var drive in hardDrives)
                                     {
-                                        <option value="@drive.Id">@drive.Brand - @drive.Model - @drive.CapacityGB GB</option>
+                                        <option value="@drive.StorageID">@drive.Model - @drive.CapacityGB GB</option>
                                     }
                                 </select>
                             </div>
@@ -139,7 +139,7 @@
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private Computer newComputer = new Computer();
     private List<int> storageOptions = new List<int>();
-    private List<HardDrive> hardDrives = new List<HardDrive>();
+    private List<Storage> hardDrives = new List<Storage>();
     private List<Brand> brands = new List<Brand>();
     private List<Processor> processors = new List<Processor>();
     private List<RAM> rams = new List<RAM>();
@@ -184,10 +184,10 @@
         }
         else if (!UseCustomStorage && newComputer.StorageID.HasValue)
         {
-            var selectedDrive = hardDrives.FirstOrDefault(d => d.Id == newComputer.StorageID.Value);
+            var selectedDrive = hardDrives.FirstOrDefault(d => d.StorageID == newComputer.StorageID.Value);
             if (selectedDrive != null)
             {
-                newComputer.StorageID = selectedDrive.Id;
+                newComputer.StorageID = selectedDrive.StorageID;
             }
         }
 
