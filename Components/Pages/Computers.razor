@@ -51,9 +51,9 @@
             await APIService.Login(user);
             try
             {
-                computers = await APIService.GetComputersSimpleDetails();
                 BlobApiService.URL? json = await BlobApiService.GetBlobUrlsAsync("xiaomi-mi-notebook-pro.jpg");
                 imageUrl = json.url;
+                computers = await APIService.GetComputersSimpleDetails();
             }
             catch (Exception ex)
             {
