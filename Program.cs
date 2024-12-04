@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<ConfigurationService>(builder.Configuration);
 
 new APIService(builder.Configuration.GetSection("API").Value);
+new BlobApiService(builder.Configuration.GetSection("BlobAPI").Value);
 
 builder.Services.AddLocalization();
 

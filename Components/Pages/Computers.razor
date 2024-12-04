@@ -16,7 +16,7 @@
     {
         <a href="/computer/@computer.ComputerID" class="computer-card">
             <div class="image-wrapper">
-                <img src="@computer.Name" alt="Imagen de @computer.Name" class="computer-image"/>
+                <img src="@imageUrl" alt="Imagen de @computer.Name" class="computer-image"/>
             </div>
             <h4>@computer.Name</h4>
             <ul>
@@ -42,6 +42,8 @@
     };
     private string errorMessage;
 
+    private string? imageUrl;
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -50,6 +52,8 @@
             try
             {
                 computers = await APIService.GetComputersSimpleDetails();
+                BlobApiService.URL? json = await BlobApiService.GetBlobUrlsAsync("xiaomi-mi-notebook-pro.jpg");
+                imageUrl = json.url;
             }
             catch (Exception ex)
             {
