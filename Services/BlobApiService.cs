@@ -2,6 +2,8 @@ using System.Net.Http.Headers;
 using UtilInfoPC.Models;
 using System.Text.Json;
 using NLog;
+using System.Net;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace INFOPC.Services
 {
@@ -29,8 +31,19 @@ namespace INFOPC.Services
         public static async Task<URL?> GetBlobUrlsAsync(string blobName)
         {
             if (token == null)
-                _ = Login(user); 
-            return await _httpClient.GetFromJsonAsync<URL>($"{_httpClient.BaseAddress}/Blobs/sas/{blobName}");
+            _ = await Login(user); 
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<URL>($"{_httpClient.BaseAddress}/Blobs/sas/{blobName}");
+            }
+            catch (WebException ex)
+            {
+                return new URL { url = string.Empty};
+            }
+            catch (Exception ex)
+            {
+                return new URL { url = string.Empty};
+            }
         }
 
         // Método para hacer login y obtener el token JWT
