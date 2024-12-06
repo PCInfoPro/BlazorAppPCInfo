@@ -51,12 +51,18 @@
             await APIService.Login(user);
             try
             {
+                Console.WriteLine($"Cargando imagenes");
                 BlobApiService.URL? json = await BlobApiService.GetBlobUrlsAsync("xiaomi-mi-notebook-pro.jpg");
                 imageUrl = json.url;
+                Console.WriteLine($"JSON recibido: {json}");
+                Console.WriteLine($"imageUrl: {imageUrl}");
+                Console.WriteLine($"Imagenes cargadas");
                 computers = await APIService.GetComputersSimpleDetails();
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"{ex.StackTrace}");
                 logger.Error(@LocResources["loadError"] + ex.Message + ex.StackTrace);
             }
         }
