@@ -40,6 +40,10 @@ namespace INFOPC.Services
             {
                 return new URL { url = string.Empty};
             }
+            catch (HttpRequestException ex)
+            {
+                return new URL { url = string.Empty};
+            }
             catch (Exception ex)
             {
                 return new URL { url = string.Empty};

@@ -11,8 +11,6 @@
     <p style="color: red">@errorMessage</p>
 }
 
-<p style="color: red">Esto es la url @imageUrl</p>
-
 <div class="computers-container">
     @foreach (var computer in computers)
     {
@@ -53,12 +51,8 @@
             await APIService.Login(user);
             try
             {
-                Console.WriteLine($"Cargando imagenes");
                 BlobApiService.URL? json = await BlobApiService.GetBlobUrlsAsync("xiaomi-mi-notebook-pro.jpg");
                 imageUrl = json.url;
-                Console.WriteLine($"JSON recibido: {json}");
-                Console.WriteLine($"imageUrl: {imageUrl}");
-                Console.WriteLine($"Imagenes cargadas");
                 computers = await APIService.GetComputersSimpleDetails();
             }
             catch (Exception ex)
