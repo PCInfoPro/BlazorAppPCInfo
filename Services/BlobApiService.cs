@@ -50,6 +50,30 @@ namespace INFOPC.Services
             }
         }
 
+        // Carga la imagen en un blob
+        public static async Task<bool> Postblob(MultipartFormDataContent file)
+        {
+            if (token == null)
+                _ = await Login(user); 
+            try
+            {
+                var response = await _httpClient.PostAsync($"{_httpClient.BaseAddress}/Blobs/upload", file);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    logger.Error("Error on PostStorages: " + response.Content);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error on PostStorages: " + ex.Message + ex.StackTrace);
+            }
+            return false;
+        }
+
         // Método para hacer login y obtener el token JWT
         public static async Task<AuthToken> Login(LoginUser user)
         {

@@ -5,6 +5,7 @@
 @inject NavigationManager Navigation
 @inject IStringLocalizer<BlazorAppPCInfo.AddComputer> Localizer
 @inject IStringLocalizer<Resources> LocResources
+@using Microsoft.AspNetCore.Components.Forms
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -125,6 +126,12 @@
                     <InputText id="ImageUrl" class="form-control" placeholder="@Localizer["placeholderurl"]" @bind-Value="newComputer.Model" />
                 </div>
 
+                <div class="drag-drop-area">
+                    Upload up to @maxAllowedFiles of up to @maxFileSize bytes:
+                    <InputFile OnChange="LoadFiles" />
+                </div>
+
+
                 <!-- Botón para guardar -->
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary">@LocResources["save"] @LocResources["computer"]</button>
@@ -143,10 +150,13 @@
     private List<Brand> brands = new List<Brand>();
     private List<Processor> processors = new List<Processor>();
     private List<RAM> rams = new List<RAM>();
-    private AuthToken token2;
     private string errorMessage;
-
     bool UseCustomStorage = false;
+    private MultipartFormDataContent formFileImage = new();
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 1;
+    private bool isLoading;
+    private string? fileName = null;
     private LoginUser user = new LoginUser 
     {
         Username = "admin",
@@ -191,36 +201,34 @@
             }
         }
 
+        if (!string.IsNullOrEmpty(fileName))
+            newComputer.ImageUrl = fileName;
+
         var response = await APIService.PostComputers(newComputer);
         if (response != null)
         {
+            if (formFileImage != null)
+                await BlobApiService.Postblob(formFileImage);
             Navigation.NavigateTo($"/computer/{response.ComputerID}");
         }
         else
         {
+            errorMessage = Localizer["addError"];
             logger.Error(Localizer["addError"]);
         }
     }
     
-    private async Task OpenAddBrandModal()
-    {
+    private async Task OpenAddBrandModal() =>
         await OpenModalAndRefresh<AddBrandForm>(@Localizer["titlemodalbrand"], RefreshBrands);
-    }
 
-    private async Task OpenAddProcessorModal()
-    {
+    private async Task OpenAddProcessorModal() =>
         await OpenModalAndRefresh<AddProcessorForm>(@Localizer["titlemodalprocessor"], RefreshProcessors);
-    }
 
-    private async Task OpenAddRAMModal()
-    {
+    private async Task OpenAddRAMModal() =>
         await OpenModalAndRefresh<AddRAMForm>(@Localizer["titlemodalRAM"], RefreshRAMs);
-    }
 
-    private async Task OpenAddHardDriveModal()
-    {
+    private async Task OpenAddHardDriveModal() =>
         await OpenModalAndRefresh<AddHardDriveForm>(@Localizer["titlemodalStorage"], RefreshHardDrives);
-    }
 
     private async Task OpenModalAndRefresh<T>(string title, Func<Task> refreshMethod) where T : IComponent
     {
@@ -237,4 +245,36 @@
     private async Task RefreshRAMs() => rams = await APIService.GetRAMs();
     private async Task RefreshHardDrives() => hardDrives = await APIService.GetStorages();
 
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                if (file != null)
+                {
+                    using var stream = file.OpenReadStream();
+                    using var memoryStream = new MemoryStream();
+                    await stream.CopyToAsync(memoryStream);
+                    var content = new ByteArrayContent(memoryStream.ToArray());
+                    content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                    // Llamada al backend para cargar el archivo
+                    formFileImage = new MultipartFormDataContent
+                    {
+                        { content, "file", file.Name }
+                    };
+
+                    fileName = file.Name;
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+        }
+    }
 }

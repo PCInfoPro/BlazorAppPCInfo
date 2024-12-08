@@ -32,3 +32,35 @@ form select.form-select {
     padding: 0.75rem;
     font-size: 1rem;
 }
+
+.drag-drop-area {
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.drag-drop-area:hover, .drag-drop-area.dragging {
+    background-color: #e9ecef;
+    border-color: #0056b3;
+}
+
+.drag-drop-area p {
+    margin: 0;
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.file-input {
+    display: none;
+}
+
+.preview {
+    max-width: 100%;
+    max-height: 300px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+}
