@@ -61,9 +61,9 @@ namespace INFOPC.Services
                 ToggleLoading(true);
                 var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/Computers", computer);
                 ToggleLoading(false);
-                var jsonString = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
+                    var jsonString = await response.Content.ReadAsStringAsync();
                     return Newtonsoft.Json.JsonConvert.DeserializeObject<Computer>(jsonString);;
                 }
                 else

@@ -12,7 +12,7 @@
     <PackageReference Include="NLog" Version="5.3.4" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="UtilInfoPC" Version="2.4.0" />
+    <PackageReference Include="UtilInfoPC" Version="2.6.0" />
   </ItemGroup>
   <PropertyGroup>
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);$(MSBuildThisFileDirectory)UtilPCInfo</RestoreAdditionalProjectSources>
