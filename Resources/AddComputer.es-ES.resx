@@ -193,4 +193,12 @@
     <value>Ingrese el precio en USD</value>
     <comment>None</comment>
   </data>
+  <data name="graphiccardmodel" xml:space="preserve">
+    <value>Modelo de la gráfica</value>
+    <comment>None</comment>
+  </data>
+  <data name="graphiccardchoose" xml:space="preserve">
+    <value>Seleccione la tarjeta gráfica</value>
+    <comment>None</comment>
+  </data>
 </root>

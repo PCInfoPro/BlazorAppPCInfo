@@ -1,0 +1,70 @@
+<div class="modal-content p-4">
+    <EditForm Model="@newGraphicCard" OnValidSubmit="HandleValidSubmit" class="needs-validation">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="form-group mb-3">
+            <label for="ProcessorName" class="form-label">Modelo de la gráfica</label>
+            <InputText id="ProcessorName" class="form-control" @bind-Value="newGraphicCard.Model" placeholder="Ejemplo: GForce GTX 1650" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Brand" class="form-label">Marca</label>
+            <select id="Brand" class="form-select" @bind="newGraphicCard.BrandID">
+                <option value="">Seleccione una marca</option>
+                @foreach (var brand in brands)
+                {
+                    <option value="@brand.BrandID">@brand.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Cores" class="form-label">Memoria</label>
+            <select id="Cores" class="form-select" @bind="newGraphicCard.MemoryGB">
+                <option value="1.0">1 GB</option>
+                <option value="2.0">2 GB</option>
+                <option value="4.0">4 GB</option>
+                <option value="8.0">8 GB</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" @onclick="CloseModal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Agregar Gráfica</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public Blazored.Modal.BlazoredModalInstance BlazoredModal { get; set; }
+    [Parameter]
+    public EventCallback OnGraphicCardAdded { get; set; }
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private GraphicsCard newGraphicCard = new GraphicsCard();
+    private List<Brand> brands = new List<Brand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await APIService.GetBrands();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (await APIService.PostGraphicsCard(newGraphicCard))
+        {
+            await OnGraphicCardAdded.InvokeAsync();
+            await BlazoredModal.CloseAsync();
+        }
+        else
+        {
+            logger.Error("Error al añadir la RAM.");
+        }
+    }
+
+    private void CloseModal()
+    {
+        BlazoredModal.CancelAsync();
+    }
+}

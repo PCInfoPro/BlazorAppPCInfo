@@ -124,6 +124,52 @@ namespace INFOPC.Services
             return false;
         }
 
+        // Obtener todos los procesadores
+        public static async Task<List<GraphicsCard>> GetGraphicsCards()
+        {
+            try
+            {
+                ToggleLoading(true);
+                List<GraphicsCard> result = await _httpClient.GetFromJsonAsync<List<GraphicsCard>>($"{_httpClient.BaseAddress}/GraphicsCards");
+                ToggleLoading(false);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error(ex, "Error al obtener la lista de GraphicsCard.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error inesperado en la solicitud de GetGraphicsCards.");
+                throw;
+            }
+        }
+
+        // Crear procesador
+        public static async Task<bool> PostGraphicsCard(GraphicsCard graphicsCard)
+        {
+            try
+            {
+                ToggleLoading(true);
+                var response = await _httpClient.PostAsJsonAsync($"{_httpClient.BaseAddress}/GraphicsCards", graphicsCard);
+                ToggleLoading(false);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    logger.Error("Error on PostGraphicsCards: " + response.Content);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error on PostGraphicsCards: " + ex.Message + ex.StackTrace);
+            }
+            return false;
+        }
+
         // Obtener todas las marcas
         public static async Task<List<Brand>> GetBrands()
         {

@@ -57,6 +57,21 @@
                     </div>
                 </div>
 
+                <!-- Grafica -->
+                <div class="mb-3">
+                    <label for="GraphicsCard" class="form-label">@LocResources["GraphicsCardModel"]</label>
+                    <button type="button" class="btn btn-link" @onclick="OpenAddGraphicCardModal"><i class="bi bi-plus"></i></button>
+                    <div class="mt-2 d-flex align-items-center">
+                        <select id="Processor" class="form-select" @bind="newComputer.GraphicsCardID">
+                            <option value="">@Localizer["graphiccardchoose"]</option>
+                            @foreach (var graphicsCard in graphicsCards)
+                            {
+                                <option value="@graphicsCard.GraphicsCardID">@graphicsCard.Brand - @graphicsCard.Model - @graphicsCard.MemoryGB GB</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Memoria RAM -->
                 <div class="mb-3">
                     <label for="RAM" class="form-label">@LocResources["ram"] (GB)</label>
@@ -120,17 +135,16 @@
                     <InputNumber id="Price" class="form-control" placeholder="@Localizer["placeholderprice"]" @bind-Value="newComputer.Price" />
                 </div>
 
-                <!-- URL de la imagen -->
+                @* <!-- URL de la imagen -->
                 <div class="mb-3">
                     <label for="ImageUrl" class="form-label">@Localizer["urlimage"]</label>
                     <InputText id="ImageUrl" class="form-control" placeholder="@Localizer["placeholderurl"]" @bind-Value="newComputer.Model" />
-                </div>
+                </div> *@
 
-                <div class="drag-drop-area">
-                    Upload up to @maxAllowedFiles of up to @maxFileSize bytes:
-                    <InputFile OnChange="LoadFiles" />
+                <div class="mb-3">
+                    <label for="image" class="form-label">Imagen</label>
+                    <DropZone></DropZone>
                 </div>
-
 
                 <!-- Botón para guardar -->
                 <div class="d-grid gap-2">
@@ -142,6 +156,17 @@
 </div>
 
 @code {
+
+    private void HandleDrop(DragEventArgs e) 
+    { 
+        
+        // Maneja el archivo arrastrado aquí 
+    } 
+    private void HandleDragOver(DragEventArgs e) 
+    {
+
+    }
+
     #region variables
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private Computer newComputer = new Computer();
@@ -150,6 +175,7 @@
     private List<Brand> brands = new List<Brand>();
     private List<Processor> processors = new List<Processor>();
     private List<RAM> rams = new List<RAM>();
+    private List<GraphicsCard> graphicsCards = new List<GraphicsCard>();
     private string errorMessage;
     bool UseCustomStorage = false;
     private MultipartFormDataContent formFileImage = new();
@@ -169,13 +195,14 @@
         try
         {
             // Login en API
-            await APIService.Login(user);
+            @* await APIService.Login(user); *@
             
             // Cargar las opciones de la API
-            await RefreshHardDrives();
+            @* await RefreshHardDrives();
             await RefreshRAMs();
             await RefreshProcessors();
             await RefreshBrands();
+            await RefreshGraphicsCards(); *@
             storageOptions = new List<int> { 128, 256, 512, 1024, 2048 };
         }
         catch(Exception ex)
@@ -230,6 +257,9 @@
     private async Task OpenAddHardDriveModal() =>
         await OpenModalAndRefresh<AddHardDriveForm>(@Localizer["titlemodalStorage"], RefreshHardDrives);
 
+    private async Task OpenAddGraphicCardModal() =>
+        await OpenModalAndRefresh<AddGraphicCardForm>(@Localizer["titlemodalStorage"], RefreshHardDrives);
+
     private async Task OpenModalAndRefresh<T>(string title, Func<Task> refreshMethod) where T : IComponent
     {
         var result = await ModalService.Show<T>(title).Result;
@@ -244,6 +274,7 @@
     private async Task RefreshProcessors() => processors = await APIService.GetProcessors();
     private async Task RefreshRAMs() => rams = await APIService.GetRAMs();
     private async Task RefreshHardDrives() => hardDrives = await APIService.GetStorages();
+    private async Task RefreshGraphicsCards() => graphicsCards = await APIService.GetGraphicsCards();
 
 
     private async Task LoadFiles(InputFileChangeEventArgs e)

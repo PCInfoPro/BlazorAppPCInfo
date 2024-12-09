@@ -193,4 +193,12 @@
     <value>Price in USD $</value>
     <comment>None</comment>
   </data>
+  <data name="graphiccardmodel" xml:space="preserve">
+    <value>Graphic model</value>
+    <comment>None</comment>
+  </data>
+  <data name="graphiccardchoose" xml:space="preserve">
+    <value>Select graphic card</value>
+    <comment>None</comment>
+  </data>
 </root>
